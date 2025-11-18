@@ -1,3 +1,5 @@
+import { createOptimizedPicture } from '../../scripts/aem.js';
+
 /**
  * Fetches data from the API endpoint
  * @param {string} apiEndpoint - The API endpoint URL
@@ -29,11 +31,32 @@ function createCard(cardData) {
   // Create card image
   const imageWrapper = document.createElement('div');
   imageWrapper.className = 'promo-card-image';
-  const img = document.createElement('img');
-  img.src = cardData.CardimageURL;
-  img.alt = cardData.CardTitle;
-  img.loading = 'lazy';
-  imageWrapper.appendChild(img);
+  
+  const imageUrl = cardData.CardimageURL || '';
+  console.log('Processing image URL:', imageUrl);
+  
+  // Check if URL is external (starts with http:// or https://)
+  const isExternalUrl = imageUrl.startsWith('http://') || imageUrl.startsWith('https://');
+  
+  if (isExternalUrl) {
+    // External URLs: use simple img tag
+    console.log('Using simple img tag for external URL');
+    const img = document.createElement('img');
+    img.src = imageUrl;
+    img.alt = cardData.CardTitle || 'Product image';
+    img.loading = 'lazy';
+    imageWrapper.appendChild(img);
+  } else {
+    // Relative paths (AEM): use createOptimizedPicture
+    console.log('Using createOptimizedPicture for relative path');
+    const picture = createOptimizedPicture(
+      imageUrl,
+      cardData.CardTitle || 'Product image',
+      false,
+      [{ width: '750' }]
+    );
+    imageWrapper.appendChild(picture);
+  }
   
   // Create card body
   const body = document.createElement('div');
@@ -41,25 +64,25 @@ function createCard(cardData) {
   
   const title = document.createElement('h3');
   title.className = 'promo-card-title';
-  title.textContent = cardData.CardTitle;
+  title.textContent = cardData.CardTitle || '';
   
   const offer = document.createElement('div');
   offer.className = 'promo-card-offer';
-  offer.textContent = `Ahorro hasta ${cardData.Offer}€`;
+  offer.textContent = `Ahorro hasta ${cardData.Offer || '0'}€`;
   
   const priceInfo = document.createElement('div');
   priceInfo.className = 'promo-card-price-info';
   priceInfo.innerHTML = `
-    <span class="price-label">${cardData.Description_1}</span>
+    <span class="price-label">${cardData.Description_1 || 'Desde'}</span>
     <div class="price-main">
-      <span class="price-value">${cardData.EmiPrice}</span>
+      <span class="price-value">${cardData.EmiPrice || '0'}</span>
       <span class="price-currency">€<span class="price-period">/mes</span></span>
     </div>
   `;
   
   const packInfo = document.createElement('div');
   packInfo.className = 'promo-card-pack';
-  packInfo.textContent = cardData.Description_2;
+  packInfo.textContent = cardData.Description_2 || '';
   
   body.appendChild(title);
   body.appendChild(offer);
@@ -98,6 +121,9 @@ export default async function decorate(block) {
   // Fetch data from API
   const cardData = await fetchCardData(apiEndpoint);
   
+  console.log('API Response:', cardData);
+  console.log('Sample image URL from API:', cardData[0]?.CardimageURL);
+  
   if (cardData.length === 0) {
     block.innerHTML = '<div class="promo-cards-error">No cards available at this time.</div>';
     return;
@@ -117,4 +143,3 @@ export default async function decorate(block) {
   block.textContent = '';
   block.appendChild(ul);
 }
-
