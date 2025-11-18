@@ -1,11 +1,10 @@
 /**
  * Content Fragment Block - Simplified Version
- * Makes a direct GET call to AEM Publish GraphQL endpoint
+ * Makes a direct GET call to GraphQL endpoint via fstab.yaml proxy (no CORS!)
  * @param {Element} block - The block element
  */
 export default async function decorate(block) {
-  // Configuration - Hardcoded AEM Publish URL and GraphQL endpoint
-  const AEM_PUBLISH_URL = 'https://publish-p171966-e1846391.adobeaemcloud.com';
+  // Configuration - Use relative path to avoid CORS (proxied through fstab.yaml)
   const GRAPHQL_ENDPOINT = '/graphql/execute.json/global/CTAByPath';
   
   // Extract parameters from block content
@@ -34,8 +33,8 @@ export default async function decorate(block) {
     const params = `;cfPath=${encodedPath};variation=${variationName}`;
     const encodedParams = params.replace(/;/g, '%3B').replace(/=/g, '%3D');
     
-    // Build the complete GraphQL URL
-    const graphqlUrl = `${AEM_PUBLISH_URL}${GRAPHQL_ENDPOINT}${encodedParams}`;
+    // Build the complete GraphQL URL (relative path - proxied through fstab.yaml)
+    const graphqlUrl = `${GRAPHQL_ENDPOINT}${encodedParams}`;
     
     console.log('Fetching Content Fragment from:', graphqlUrl);
 
