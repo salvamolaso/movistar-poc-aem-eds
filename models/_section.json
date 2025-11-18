@@ -51,6 +51,7 @@
         "cards",
         "columns",
         "carousel",
+        "contentfragment",
         "fragment",
         "promo-cards"
       ]
