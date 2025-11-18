@@ -214,5 +214,18 @@
         "valueType": "string"
       }
     ]
+  },
+  {
+    "id": "promo-cards",
+    "fields": [
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "apiEndpoint",
+        "label": "API Endpoint",
+        "description": "The URL endpoint to fetch card data from",
+        "value": "https://691ae6a52d8d78557570a004.mockapi.io/api/getData/Data"
+      }
+    ]
   }
 ]
