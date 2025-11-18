@@ -23,6 +23,27 @@
           "label": "Keywords"
         }
       ]
-    }
+    },
+    {
+    "id": "contentfragment",
+    "fields": [
+      {
+        "component": "aem-content",
+        "name": "reference",
+        "label": "Reference"
+      },
+      {
+        "component": "select",
+        "name": "style",
+        "label": "Style",
+        "options": [
+          {
+            "name": "Master",
+            "value": "master"
+          }
+        ]
+      }
+    ]
+  }
   ]
 }
