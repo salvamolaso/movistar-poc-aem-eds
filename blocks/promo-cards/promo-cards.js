@@ -101,19 +101,8 @@ function createCard(cardData) {
  * @param {HTMLElement} block - The block element
  */
 export default async function decorate(block) {
-  // Get API endpoint from block configuration
-  // Default endpoint if not specified
-  const defaultEndpoint = 'https://691ae6a52d8d78557570a004.mockapi.io/api/getData/Data';
-  let apiEndpoint = defaultEndpoint;
-  
-  // Check if block has configuration (first row with endpoint)
-  const firstRow = block.querySelector(':scope > div');
-  if (firstRow) {
-    const textContent = firstRow.textContent.trim();
-    if (textContent && textContent.startsWith('http')) {
-      apiEndpoint = textContent;
-    }
-  }
+  // Hardcoded API endpoint - not authored by users
+  const apiEndpoint = 'https://691ae6a52d8d78557570a004.mockapi.io/api/getData/Data';
   
   // Show loading state
   block.innerHTML = '<div class="promo-cards-loading">Loading cards...</div>';
