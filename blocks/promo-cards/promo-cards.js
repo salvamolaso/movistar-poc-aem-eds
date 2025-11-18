@@ -26,26 +26,6 @@ function createCard(cardData) {
   const li = document.createElement('li');
   li.className = 'promo-card';
   
-  // Create card header with blue background
-  const header = document.createElement('div');
-  header.className = 'promo-card-header';
-  
-  const blueWeeks = document.createElement('div');
-  blueWeeks.className = 'promo-card-badge';
-  blueWeeks.innerHTML = `
-    <span class="badge-text">Blue<br>Weeks</span>
-  `;
-  
-  const headerPrice = document.createElement('div');
-  headerPrice.className = 'promo-card-header-price';
-  headerPrice.innerHTML = `
-    <span class="price-label">Desde</span>
-    <span class="price-value">0€<span class="price-period">/mes</span></span>
-  `;
-  
-  header.appendChild(blueWeeks);
-  header.appendChild(headerPrice);
-  
   // Create card image
   const imageWrapper = document.createElement('div');
   imageWrapper.className = 'promo-card-image';
@@ -70,16 +50,16 @@ function createCard(cardData) {
   const priceInfo = document.createElement('div');
   priceInfo.className = 'promo-card-price-info';
   priceInfo.innerHTML = `
-    <span class="price-label">Desde</span>
+    <span class="price-label">${cardData.Description_1}</span>
     <div class="price-main">
-      <span class="price-value">0</span>
+      <span class="price-value">${cardData.EmiPrice}</span>
       <span class="price-currency">€<span class="price-period">/mes</span></span>
     </div>
   `;
   
   const packInfo = document.createElement('div');
   packInfo.className = 'promo-card-pack';
-  packInfo.textContent = 'Con tu pack miMovistar';
+  packInfo.textContent = cardData.Description_2;
   
   body.appendChild(title);
   body.appendChild(offer);
@@ -87,7 +67,6 @@ function createCard(cardData) {
   body.appendChild(packInfo);
   
   // Assemble card
-  li.appendChild(header);
   li.appendChild(imageWrapper);
   li.appendChild(body);
   

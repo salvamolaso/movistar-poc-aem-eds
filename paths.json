@@ -5,6 +5,7 @@
     "/content/Telephonica/metadata:/metadata.json"
   ],
   "includes": [
-    "/content/Telephonica/"
+    "/content/Telephonica/",
+    "/content/dam/"
   ]
 }
