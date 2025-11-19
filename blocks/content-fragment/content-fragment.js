@@ -57,12 +57,19 @@ export default async function decorate(block) {
     // Make GET request to GraphQL endpoint
     // In Universal Editor: uses author proxy with automatic authentication
     // In EDS site: direct to publish with CORS headers
-    const response = await fetch(graphqlUrl, {
+    const fetchOptions = {
       method: 'GET',
       headers: {
         'Accept': 'application/json'
       }
-    });
+    };
+    
+    // Include credentials when using proxy to pass through authentication cookies
+    if (isUniversalEditor) {
+      fetchOptions.credentials = 'include';
+    }
+    
+    const response = await fetch(graphqlUrl, fetchOptions);
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
