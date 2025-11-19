@@ -48,5 +48,11 @@
       "title",
       "contentfragment"
     ]
+  },
+  {
+    "id": "contentfragments",
+    "components": [
+      "contentfragmentitem"
+    ]
   }
 ]
