@@ -32,14 +32,11 @@ export default async function decorate(block) {
   const contentPath = block.querySelector(':scope div:nth-child(1) > div a')?.textContent?.trim() 
                       || block.querySelector(':scope div:nth-child(1) > div')?.textContent?.trim();
   const variationName = block.querySelector(':scope div:nth-child(2) > div')?.textContent?.trim()?.toLowerCase()?.replace(' ', '_') || 'master';
-  const displayStyle = block.querySelector(':scope div:nth-child(3) > div')?.textContent?.trim() || '';
-  const alignment = block.querySelector(':scope div:nth-child(4) > div')?.textContent?.trim() || '';
-  const ctaStyle = block.querySelector(':scope div:nth-child(5) > div')?.textContent?.trim() || 'button';
 
   // Validate content path
   if (!contentPath) {
     console.error('Content Fragment: No content path provided');
-    block.innerHTML = '<p class="error">Content Fragment path is required</p>';
+    block.innerHTML = '<div class="cf-error"><p>Content Fragment path is required</p></div>';
     return;
   }
 
@@ -112,75 +109,45 @@ export default async function decorate(block) {
     }
 
     // Extract data with fallbacks
-    const title = cfData.title || '';
-    const subtitle = cfData.subtitle || '';
     const description = cfData.description?.plaintext || '';
-    const ctalabel = cfData.ctalabel || '';
-    const ctaurl = cfData.ctaurl || '#';
     
-    // Always use _publishUrl for images (as requested)
-    const imageUrl = cfData.bannerimage?._publishUrl || '';
+    // Use _publishUrl for images in EDS, _authorUrl for Universal Editor
+    const imageUrl = isUniversalEditor && isOnAuthorDomain 
+      ? cfData.bannerimage?._authorUrl || cfData.bannerimage?._publishUrl || ''
+      : cfData.bannerimage?._publishUrl || '';
 
     // Universal Editor attributes
     const itemId = `urn:aemconnection:${contentPath}/jcr:content/data/${variationName}`;
 
-    // Determine layout styles
-    let bannerContentStyle = '';
-    let bannerDetailStyle = '';
-    
-    if (imageUrl) {
-      if (displayStyle === 'image-left' || displayStyle === 'image-right' || 
-          displayStyle === 'image-top' || displayStyle === 'image-bottom') {
-        // For specific layouts, set image as background on content
-        bannerContentStyle = `background-image: url(${imageUrl});`;
-      } else {
-        // Default layout: image as background with gradient overlay
-        bannerDetailStyle = `background-image: linear-gradient(90deg, rgba(0,0,0,0.6), rgba(0,0,0,0.1) 80%), url(${imageUrl});`;
-      }
-    }
-
-    // Render the content fragment
+    // Render the content fragment as a card (same structure as cards block)
     block.innerHTML = `
-      <div class='banner-content block ${displayStyle}' 
-           data-aue-resource="${itemId}" 
-           data-aue-label="${variationName || 'Elements'}" 
-           data-aue-type="reference" 
-           data-aue-filter="contentfragment" 
-           style="${bannerContentStyle}">
-        
-        <div class='banner-detail ${alignment}' 
-             style="${bannerDetailStyle}" 
-             data-aue-prop="bannerimage" 
-             data-aue-label="Main Image" 
-             data-aue-type="media">
+      <ul>
+        <li data-aue-resource="${itemId}" 
+            data-aue-label="${variationName || 'Elements'}" 
+            data-aue-type="reference" 
+            data-aue-filter="contentfragment">
           
-          ${title ? `<p data-aue-prop="title" data-aue-label="Title" data-aue-type="text" class='cftitle'>${title}</p>` : ''}
-          
-          ${subtitle ? `<p data-aue-prop="subtitle" data-aue-label="SubTitle" data-aue-type="text" class='cfsubtitle'>${subtitle}</p>` : ''}
-          
-          ${description ? `<div data-aue-prop="description" data-aue-label="Description" data-aue-type="richtext" class='cfdescription'><p>${description}</p></div>` : ''}
-          
-          ${ctalabel ? `
-            <p class="button-container ${ctaStyle}">
-              <a href="${ctaurl}" 
-                 data-aue-prop="ctaUrl" 
-                 data-aue-label="Button Link/URL" 
-                 data-aue-type="reference" 
-                 target="_blank" 
-                 rel="noopener" 
-                 data-aue-filter="page" 
-                 class='button'>
-                <span data-aue-prop="ctalabel" data-aue-label="Button Label" data-aue-type="text">
-                  ${ctalabel}
-                </span>
-              </a>
-            </p>
+          ${imageUrl ? `
+            <div class='content-fragment-card-image'>
+              <img src="${imageUrl}" 
+                   alt="${description.substring(0, 50)}" 
+                   data-aue-prop="bannerimage" 
+                   data-aue-label="Banner Image" 
+                   data-aue-type="media">
+            </div>
           ` : ''}
           
-        </div>
-        
-        <div class='banner-logo'></div>
-      </div>
+          ${description ? `
+            <div class='content-fragment-card-body' 
+                 data-aue-prop="description" 
+                 data-aue-label="Description" 
+                 data-aue-type="richtext">
+              ${description.split('\n').filter(line => line.trim()).map(line => `<p>${line}</p>`).join('')}
+            </div>
+          ` : ''}
+          
+        </li>
+      </ul>
     `;
 
     console.log('Content Fragment rendered successfully');
