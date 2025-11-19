@@ -329,67 +329,21 @@ export default async function decorate(block) {
   
   // Check if block has authored content (Universal Editor)
   // Universal Editor creates a table-like structure with rows and cells
-  const hasAuthoredContent = block.children.length > 0 && 
-    (block.querySelector('div > div') || 
-     block.querySelector('[data-aue-prop]') ||
-     block.firstElementChild?.children?.length > 0);
+  const hasAuthoredContent = block.children.length > 0;
   
   if (hasAuthoredContent) {
     // Authored content from Universal Editor
     const data = extractAuthoredData(block);
     
-    // Check if we have minimal required data
-    if (Object.keys(data).length > 0) {
-      nav = createAuthoredNav(data);
-      block.textContent = '';
-    } else {
-      // Fall back to fragment if extraction failed
-      const navMeta = getMetadata('nav');
-      const navPath = navMeta ? new URL(navMeta, window.location).pathname : '/nav';
-      const fragment = await loadFragment(navPath);
-
-      block.textContent = '';
-      nav = document.createElement('nav');
-      nav.id = 'nav';
-      while (fragment.firstElementChild) nav.append(fragment.firstElementChild);
-
-      const classes = ['brand', 'sections', 'tools'];
-      classes.forEach((c, i) => {
-        const section = nav.children[i];
-        if (section) section.classList.add(`nav-${c}`);
-      });
-
-      const navBrand = nav.querySelector('.nav-brand');
-      const brandLink = navBrand?.querySelector('.button');
-      if (brandLink) {
-        brandLink.className = '';
-        brandLink.closest('.button-container').className = '';
-      }
-    }
-  } else {
-    // Load nav as fragment (legacy approach)
-    const navMeta = getMetadata('nav');
-    const navPath = navMeta ? new URL(navMeta, window.location).pathname : '/nav';
-    const fragment = await loadFragment(navPath);
-
-    // decorate nav DOM
+    // Always use authored content if block has any children
+    // Create nav with whatever data we have
+    nav = createAuthoredNav(data);
     block.textContent = '';
+  } else {
+    // Create empty/placeholder nav if no content
     nav = document.createElement('nav');
     nav.id = 'nav';
-    while (fragment.firstElementChild) nav.append(fragment.firstElementChild);
-
-    const classes = ['brand', 'sections', 'tools'];
-    classes.forEach((c, i) => {
-      const section = nav.children[i];
-      if (section) section.classList.add(`nav-${c}`);
-    });
-
-    const navBrand = nav.querySelector('.nav-brand');
-    const brandLink = navBrand?.querySelector('.button');
-    if (brandLink) {
-      brandLink.className = '';
-      brandLink.closest('.button-container').className = '';
-    }
+    nav.innerHTML = '<div class="nav-brand"><a href="/">Logo</a></div><div class="nav-search"></div><div class="nav-sections"></div><div class="nav-tools"></div>';
   }
 
   const navSections = nav.querySelector('.nav-sections');
