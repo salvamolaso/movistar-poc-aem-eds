@@ -6,17 +6,28 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(257px, 1fr));
   grid-gap: 24px;
+  align-items: stretch;
 }
 
 .content-fragments > ul > li {
   /* Remove border as content-fragment block will have its own styling */
-  display: block;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 /* Override content-fragment styles when inside content-fragments container */
+.content-fragments .content-fragment {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
 .content-fragments .content-fragment > ul {
   /* Disable grid for individual content-fragment inside container */
-  display: block;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   grid-template-columns: unset;
   grid-gap: 0;
 }
@@ -25,19 +36,27 @@
   /* Individual content fragment card styling */
   border: 1px solid #dadada;
   background-color: var(--background-color);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .content-fragments .content-fragment .content-fragment-card-body {
   margin: 16px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .content-fragments .content-fragment .content-fragment-card-image {
   line-height: 0;
+  flex-shrink: 0;
 }
 
 .content-fragments .content-fragment > ul > li img {
   width: 100%;
   aspect-ratio: 4 / 3;
   object-fit: cover;
+  display: block;
 }
 
