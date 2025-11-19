@@ -57,7 +57,7 @@ function focusNavSection() {
  * @param {Boolean} expanded Whether the element should be expanded or collapsed
  */
 function toggleAllNavSections(sections, expanded = false) {
-  sections.querySelectorAll('.nav-sections .default-content-wrapper > ul > li').forEach((section) => {
+  sections.querySelectorAll('.nav-sections ul > li').forEach((section) => {
     section.setAttribute('aria-expanded', expanded);
   });
 }
@@ -104,37 +104,237 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
 }
 
 /**
+ * Parse navigation items from authored content
+ * @param {string} navItemsText Navigation items text
+ * @returns {Array} Array of navigation item objects
+ */
+function parseNavItems(navItemsText) {
+  if (!navItemsText) return [];
+  
+  const items = navItemsText.split('\n').filter(item => item.trim());
+  return items.map(item => {
+    const parts = item.split('|');
+    if (parts.length >= 2) {
+      const label = parts[0].trim();
+      const url = parts[1].trim();
+      const subItems = parts[2] ? parts[2].split(',').map(sub => {
+        const [subLabel, subUrl] = sub.split(':');
+        return { label: subLabel.trim(), url: subUrl.trim() };
+      }) : null;
+      
+      return { label, url, subItems };
+    }
+    return null;
+  }).filter(item => item !== null);
+}
+
+/**
+ * Create navigation from authored content
+ * @param {Object} data Authored data from Universal Editor
+ * @returns {Element} Navigation element
+ */
+function createAuthoredNav(data) {
+  const nav = document.createElement('nav');
+  nav.id = 'nav';
+
+  // Brand section
+  const brandDiv = document.createElement('div');
+  brandDiv.classList.add('nav-brand');
+  const logoLink = document.createElement('a');
+  logoLink.href = data.logoLink || '/';
+  logoLink.setAttribute('aria-label', data.logoAlt || 'Home');
+  
+  if (data.logo) {
+    const logoImg = document.createElement('img');
+    logoImg.src = data.logo;
+    logoImg.alt = data.logoAlt || 'Logo';
+    logoLink.appendChild(logoImg);
+  } else {
+    logoLink.textContent = data.logoAlt || 'Logo';
+  }
+  
+  brandDiv.appendChild(logoLink);
+
+  // Search section
+  const searchDiv = document.createElement('div');
+  searchDiv.classList.add('nav-search');
+  const searchForm = document.createElement('form');
+  searchForm.action = data.searchAction || '/search';
+  searchForm.method = 'GET';
+  searchForm.setAttribute('role', 'search');
+  
+  const searchInput = document.createElement('input');
+  searchInput.type = 'search';
+  searchInput.name = 'q';
+  searchInput.placeholder = data.searchPlaceholder || 'Search';
+  searchInput.setAttribute('aria-label', 'Search');
+  
+  const searchButton = document.createElement('button');
+  searchButton.type = 'submit';
+  searchButton.setAttribute('aria-label', 'Submit search');
+  searchButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>';
+  
+  searchForm.appendChild(searchInput);
+  searchForm.appendChild(searchButton);
+  searchDiv.appendChild(searchForm);
+
+  // Navigation sections
+  const sectionsDiv = document.createElement('div');
+  sectionsDiv.classList.add('nav-sections');
+  const navItems = parseNavItems(data.navItems);
+  
+  if (navItems.length > 0) {
+    const ul = document.createElement('ul');
+    navItems.forEach(item => {
+      const li = document.createElement('li');
+      const link = document.createElement('a');
+      link.href = item.url;
+      link.textContent = item.label;
+      li.appendChild(link);
+      
+      if (item.subItems && item.subItems.length > 0) {
+        li.classList.add('nav-drop');
+        const subUl = document.createElement('ul');
+        item.subItems.forEach(subItem => {
+          const subLi = document.createElement('li');
+          const subLink = document.createElement('a');
+          subLink.href = subItem.url;
+          subLink.textContent = subItem.label;
+          subLi.appendChild(subLink);
+          subUl.appendChild(subLi);
+        });
+        li.appendChild(subUl);
+      }
+      
+      ul.appendChild(li);
+    });
+    sectionsDiv.appendChild(ul);
+  }
+
+  // Tools section
+  const toolsDiv = document.createElement('div');
+  toolsDiv.classList.add('nav-tools');
+  
+  // Store link
+  if (data.storeLabel || data.storeIcon) {
+    const storeLink = document.createElement('a');
+    storeLink.href = data.storeLink || '/tiendas';
+    storeLink.classList.add('nav-tool-item');
+    
+    if (data.storeIcon) {
+      const storeIconImg = document.createElement('img');
+      storeIconImg.src = data.storeIcon;
+      storeIconImg.alt = '';
+      storeIconImg.classList.add('nav-tool-icon');
+      storeLink.appendChild(storeIconImg);
+    }
+    
+    if (data.storeLabel) {
+      const storeSpan = document.createElement('span');
+      storeSpan.textContent = data.storeLabel;
+      storeLink.appendChild(storeSpan);
+    }
+    
+    toolsDiv.appendChild(storeLink);
+  }
+  
+  // User link
+  if (data.userLabel || data.userIcon) {
+    const userLink = document.createElement('a');
+    userLink.href = data.userLink || '/login';
+    userLink.classList.add('nav-tool-item');
+    
+    if (data.userIcon) {
+      const userIconImg = document.createElement('img');
+      userIconImg.src = data.userIcon;
+      userIconImg.alt = '';
+      userIconImg.classList.add('nav-tool-icon');
+      userLink.appendChild(userIconImg);
+    }
+    
+    if (data.userLabel) {
+      const userSpan = document.createElement('span');
+      userSpan.textContent = data.userLabel;
+      userLink.appendChild(userSpan);
+    }
+    
+    toolsDiv.appendChild(userLink);
+  }
+
+  // Append all sections to nav
+  nav.appendChild(brandDiv);
+  nav.appendChild(searchDiv);
+  nav.appendChild(sectionsDiv);
+  nav.appendChild(toolsDiv);
+
+  return nav;
+}
+
+/**
+ * Extract authored data from block
+ * @param {Element} block The header block element
+ * @returns {Object} Authored data object
+ */
+function extractAuthoredData(block) {
+  const data = {};
+  
+  [...block.children].forEach((row) => {
+    const cells = [...row.children];
+    if (cells.length >= 2) {
+      const key = cells[0].textContent.trim();
+      const value = cells[1].textContent.trim() || cells[1].querySelector('img')?.src || '';
+      
+      // Convert key to camelCase
+      const camelKey = key.replace(/[-\s](.)/g, (_, char) => char.toUpperCase()).replace(/^./, str => str.toLowerCase());
+      data[camelKey] = value;
+    }
+  });
+  
+  return data;
+}
+
+/**
  * loads and decorates the header, mainly the nav
  * @param {Element} block The header block element
  */
 export default async function decorate(block) {
-  // load nav as fragment
-  const navMeta = getMetadata('nav');
-  const navPath = navMeta ? new URL(navMeta, window.location).pathname : '/nav';
-  const fragment = await loadFragment(navPath);
+  let nav;
+  
+  // Check if block has authored content (Universal Editor)
+  if (block.children.length > 0 && block.querySelector('div > div')) {
+    // Authored content from Universal Editor
+    const data = extractAuthoredData(block);
+    nav = createAuthoredNav(data);
+    block.textContent = '';
+  } else {
+    // Load nav as fragment (legacy approach)
+    const navMeta = getMetadata('nav');
+    const navPath = navMeta ? new URL(navMeta, window.location).pathname : '/nav';
+    const fragment = await loadFragment(navPath);
 
-  // decorate nav DOM
-  block.textContent = '';
-  const nav = document.createElement('nav');
-  nav.id = 'nav';
-  while (fragment.firstElementChild) nav.append(fragment.firstElementChild);
+    // decorate nav DOM
+    block.textContent = '';
+    nav = document.createElement('nav');
+    nav.id = 'nav';
+    while (fragment.firstElementChild) nav.append(fragment.firstElementChild);
 
-  const classes = ['brand', 'sections', 'tools'];
-  classes.forEach((c, i) => {
-    const section = nav.children[i];
-    if (section) section.classList.add(`nav-${c}`);
-  });
+    const classes = ['brand', 'sections', 'tools'];
+    classes.forEach((c, i) => {
+      const section = nav.children[i];
+      if (section) section.classList.add(`nav-${c}`);
+    });
 
-  const navBrand = nav.querySelector('.nav-brand');
-  const brandLink = navBrand.querySelector('.button');
-  if (brandLink) {
-    brandLink.className = '';
-    brandLink.closest('.button-container').className = '';
+    const navBrand = nav.querySelector('.nav-brand');
+    const brandLink = navBrand?.querySelector('.button');
+    if (brandLink) {
+      brandLink.className = '';
+      brandLink.closest('.button-container').className = '';
+    }
   }
 
   const navSections = nav.querySelector('.nav-sections');
   if (navSections) {
-    navSections.querySelectorAll(':scope .default-content-wrapper > ul > li').forEach((navSection) => {
+    navSections.querySelectorAll(':scope ul > li').forEach((navSection) => {
       if (navSection.querySelector('ul')) navSection.classList.add('nav-drop');
       navSection.addEventListener('click', () => {
         if (isDesktop.matches) {

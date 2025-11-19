@@ -372,6 +372,104 @@
     ]
   },
   {
+    "id": "header",
+    "fields": [
+      {
+        "component": "reference",
+        "name": "logo",
+        "label": "Logo Image",
+        "valueType": "string",
+        "description": "Upload or select the brand logo"
+      },
+      {
+        "component": "text",
+        "name": "logoAlt",
+        "label": "Logo Alt Text",
+        "valueType": "string",
+        "value": "Movistar",
+        "description": "Alternative text for the logo"
+      },
+      {
+        "component": "text",
+        "name": "logoLink",
+        "label": "Logo Link URL",
+        "valueType": "string",
+        "value": "/",
+        "description": "URL when logo is clicked"
+      },
+      {
+        "component": "text",
+        "name": "searchPlaceholder",
+        "label": "Search Placeholder Text",
+        "valueType": "string",
+        "value": "Busca en Movistar",
+        "description": "Placeholder text for search bar"
+      },
+      {
+        "component": "text",
+        "name": "searchAction",
+        "label": "Search Action URL",
+        "valueType": "string",
+        "value": "/search",
+        "description": "URL for search form submission"
+      },
+      {
+        "component": "multiselect",
+        "name": "navItems",
+        "label": "Navigation Items",
+        "valueType": "string",
+        "description": "Add navigation menu items (format: Label|URL or Label|URL|SubLabel1:SubURL1,SubLabel2:SubURL2 for dropdowns)",
+        "multi": true
+      },
+      {
+        "component": "reference",
+        "name": "storeIcon",
+        "label": "Store/Gift Icon",
+        "valueType": "string",
+        "description": "Icon for store/tiendas"
+      },
+      {
+        "component": "text",
+        "name": "storeLabel",
+        "label": "Store Label",
+        "valueType": "string",
+        "value": "Tiendas",
+        "description": "Label for store link"
+      },
+      {
+        "component": "text",
+        "name": "storeLink",
+        "label": "Store Link URL",
+        "valueType": "string",
+        "value": "/tiendas",
+        "description": "URL for store link"
+      },
+      {
+        "component": "reference",
+        "name": "userIcon",
+        "label": "User Profile Icon",
+        "valueType": "string",
+        "description": "Icon for user profile"
+      },
+      {
+        "component": "text",
+        "name": "userLabel",
+        "label": "User Label",
+        "valueType": "string",
+        "value": "Identifícate",
+        "description": "Label for user login link"
+      },
+      {
+        "component": "text",
+        "name": "userLink",
+        "label": "User Link URL",
+        "valueType": "string",
+        "value": "/login",
+        "description": "URL for user login"
+      }
+    ]
+  },
+  {
     "id": "hero",
     "fields": [
       {
