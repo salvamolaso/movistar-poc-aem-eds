@@ -105,13 +105,22 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
 
 /**
  * Parse navigation items from authored content
- * @param {string} navItemsText Navigation items text
+ * @param {string} navItemsText Navigation items text (can be HTML from richtext)
  * @returns {Array} Array of navigation item objects
  */
 function parseNavItems(navItemsText) {
   if (!navItemsText) return [];
   
-  const items = navItemsText.split('\n').filter(item => item.trim());
+  // Remove HTML tags if present (from richtext component)
+  let cleanText = navItemsText;
+  if (navItemsText.includes('<')) {
+    // Extract text from HTML
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = navItemsText;
+    cleanText = tempDiv.textContent || tempDiv.innerText || '';
+  }
+  
+  const items = cleanText.split('\n').filter(item => item.trim());
   return items.map(item => {
     const parts = item.split('|');
     if (parts.length >= 2) {
@@ -282,7 +291,18 @@ function extractAuthoredData(block) {
     const cells = [...row.children];
     if (cells.length >= 2) {
       const key = cells[0].textContent.trim();
-      const value = cells[1].textContent.trim() || cells[1].querySelector('img')?.src || '';
+      
+      // Check for image first
+      const img = cells[1].querySelector('img');
+      let value;
+      
+      if (img) {
+        value = img.src;
+      } else {
+        // For richtext fields, get innerHTML; for text fields, get textContent
+        const hasHtml = cells[1].querySelector('p, div, br');
+        value = hasHtml ? cells[1].innerHTML.trim() : cells[1].textContent.trim();
+      }
       
       // Convert key to camelCase
       const camelKey = key.replace(/[-\s](.)/g, (_, char) => char.toUpperCase()).replace(/^./, str => str.toLowerCase());
