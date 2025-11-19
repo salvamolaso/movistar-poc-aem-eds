@@ -1,20 +1,308 @@
+/* Footer styling */
 footer {
-  background-color: var(--light-color);
-  font-size: var(--body-font-size-xs);
+  background: linear-gradient(180deg, #0B6CFF 0%, #0952CC 100%);
+  color: #fff;
+  padding: 50px 0 30px;
+  margin-top: auto;
 }
 
-footer .footer > div {
-  margin: auto;
-  max-width: 1200px;
-  padding: 40px 24px 24px;
+footer .footer {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 24px;
 }
 
-footer .footer p {
+/* Social media icons section - first columns block */
+footer .section.columns-container:first-child {
+  margin-bottom: 35px;
+}
+
+footer .section.columns-container:first-child .columns {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+  padding: 0;
   margin: 0;
 }
 
-@media (width >= 900px) {
-  footer .footer > div {
-    padding: 40px 32px 24px;
+footer .section.columns-container:first-child .columns > div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+  width: 100%;
+}
+
+footer .section.columns-container:first-child .columns-img-col {
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+footer .section.columns-container:first-child .columns-img-col picture {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+footer .section.columns-container:first-child .columns-img-col img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+footer .section.columns-container:first-child .columns-img-col:hover img {
+  opacity: 0.7;
+  transform: scale(1.1);
+}
+
+/* Divider line after social icons */
+footer .section.columns-container:first-child {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+  padding-bottom: 35px;
+}
+
+/* Links section */
+footer .section:not(.columns-container) .default-content-wrapper {
+  margin: 35px 0;
+  padding: 0;
+}
+
+footer .section:not(.columns-container) .default-content-wrapper ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 6px 8px;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+footer .section:not(.columns-container) .default-content-wrapper ul li {
+  color: #fff;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+footer .section:not(.columns-container) .default-content-wrapper ul li:hover {
+  color: #B3D9FF;
+}
+
+footer .section:not(.columns-container) .default-content-wrapper ul li a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.3s ease;
+  cursor: pointer;
+}
+
+footer .section:not(.columns-container) .default-content-wrapper ul li a:hover {
+  color: #B3D9FF;
+  text-decoration: none;
+}
+
+/* Separator pipes */
+footer .section:not(.columns-container) .default-content-wrapper ul li::before {
+  content: '';
+  display: inline;
+}
+
+/* Divider line after links */
+footer > div > div > .section:not(.columns-container):first-of-type {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+  padding-bottom: 35px;
+  margin-bottom: 40px;
+}
+
+/* Organization logos section - second columns block */
+footer .section.columns-container:last-of-type {
+  margin-bottom: 35px;
+}
+
+footer .section.columns-container:last-of-type .columns {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 50px;
+  padding: 0;
+  margin: 0;
+}
+
+footer .section.columns-container:last-of-type .columns > div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 50px;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+footer .section.columns-container:last-of-type .columns-img-col {
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+footer .section.columns-container:last-of-type .columns-img-col:hover {
+  transform: translateY(-3px);
+  opacity: 0.85;
+}
+
+footer .section.columns-container:last-of-type .columns-img-col picture {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+footer .section.columns-container:last-of-type .columns-img-col img {
+  max-width: 180px;
+  height: auto;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* Telefónica logo section - last section with image */
+footer > div > div > .section:last-child {
+  text-align: center;
+  padding-top: 30px;
+  border-top: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+footer > div > div > .section:last-child .default-content-wrapper {
+  margin: 0;
+  padding: 0;
+}
+
+footer > div > div > .section:last-child p {
+  margin: 0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-block;
+}
+
+footer > div > div > .section:last-child p:hover {
+  transform: scale(1.05);
+  opacity: 0.85;
+}
+
+footer > div > div > .section:last-child picture {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+footer > div > div > .section:last-child img {
+  max-width: 160px;
+  height: auto;
+  filter: brightness(0) invert(1);
+  cursor: pointer;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  footer {
+    padding: 30px 0 15px;
   }
+
+  footer .footer {
+    padding: 0 16px;
+  }
+
+  /* Stack social icons in smaller grid on mobile */
+  footer .section.columns-container:first-child .columns > div {
+    gap: 15px;
+  }
+
+  /* Links in single column on mobile */
+  footer .section:not(.columns-container) .default-content-wrapper ul {
+    flex-direction: column;
+    gap: 12px;
+    font-size: 12px;
+  }
+
+  footer .section:not(.columns-container) .default-content-wrapper ul li {
+    text-align: center;
+  }
+
+  /* Organization logos stack on mobile */
+  footer .section.columns-container:last-of-type .columns > div {
+    gap: 20px;
+  }
+
+  footer .section.columns-container:last-of-type .columns-img-col img {
+    max-width: 100px;
+  }
+
+  footer > div > div > .section:last-child img {
+    max-width: 120px;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  /* Medium screens - adjust spacing */
+  footer .section.columns-container:last-of-type .columns > div {
+    gap: 30px;
+  }
+}
+
+/* Remove default margins */
+footer .section {
+  margin: 0;
+}
+
+footer .default-content-wrapper {
+  max-width: 100%;
+}
+
+/* Ensure proper text color throughout */
+footer,
+footer p,
+footer li,
+footer a {
+  color: #fff;
+}
+
+/* Add pointer cursor to all clickable elements */
+footer a,
+footer li,
+footer img,
+footer picture,
+footer .columns-img-col {
+  cursor: pointer;
+}
+
+/* Smooth transitions for all interactive elements */
+footer a,
+footer li,
+footer img {
+  transition: all 0.3s ease;
+}
+
+/* Better text rendering */
+footer {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Ensure all text is selectable but looks good */
+footer * {
+  user-select: text;
+}
+
+/* Additional hover states for better UX */
+footer .columns-img-col picture:hover {
+  filter: brightness(1.1);
 }
