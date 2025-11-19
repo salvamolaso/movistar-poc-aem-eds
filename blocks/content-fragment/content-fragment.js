@@ -4,18 +4,29 @@
  * @param {Element} block - The block element
  */
 export default async function decorate(block) {
-  // Configuration - Use proxy for CORS-free requests in Universal Editor
+  // Detect Universal Editor context
   const isUniversalEditor = window.location.pathname.includes('.html') 
                             || window.self !== window.top 
-                            || document.referrer.includes('adobe.com');
+                            || document.referrer.includes('adobe.com')
+                            || window.location.hostname.includes('author-');
   
-  // Use author proxy in Universal Editor (authenticated via session), publish for EDS site
-  // Proxy endpoints are defined in fstab.yaml - no CORS issues, no manual login needed
-  const AEM_BASE_URL = isUniversalEditor 
-    ? '/graphql-author'  // Uses author instance proxy - automatic authentication
-    : 'https://publish-p171966-e1846391.adobeaemcloud.com/graphql'; // Direct to publish
+  // Check if we're actually on the AEM Author domain
+  const isOnAuthorDomain = window.location.hostname.includes('adobeaemcloud.com');
   
-  const GRAPHQL_ENDPOINT = '/execute.json/global/CTAByPath';
+  // Determine the GraphQL endpoint
+  let graphqlBaseUrl;
+  if (isUniversalEditor && isOnAuthorDomain) {
+    // Running on AEM Author domain - use relative URL (no proxy needed, auth automatic)
+    graphqlBaseUrl = '';
+  } else if (isUniversalEditor) {
+    // Running in Universal Editor but not on author domain - use proxy
+    graphqlBaseUrl = '/graphql-author';
+  } else {
+    // Running on EDS site - direct to publish
+    graphqlBaseUrl = 'https://publish-p171966-e1846391.adobeaemcloud.com';
+  }
+  
+  const GRAPHQL_ENDPOINT = '/graphql/execute.json/global/CTAByPath';
   
   // Extract parameters from block content
   const contentPath = block.querySelector(':scope div:nth-child(1) > div a')?.textContent?.trim() 
@@ -44,19 +55,21 @@ export default async function decorate(block) {
     const encodedParams = params.replace(/;/g, '%3B').replace(/=/g, '%3D');
     
     // Build the complete GraphQL URL
-    const graphqlUrl = `${AEM_BASE_URL}${GRAPHQL_ENDPOINT}${encodedParams}`;
+    const graphqlUrl = `${graphqlBaseUrl}${GRAPHQL_ENDPOINT}${encodedParams}`;
     
     console.log('Content Fragment Configuration:', {
       url: graphqlUrl,
       isUniversalEditor,
-      endpoint: isUniversalEditor ? 'Author (via proxy)' : 'Publish (direct)',
+      isOnAuthorDomain,
+      hostname: window.location.hostname,
+      endpoint: isUniversalEditor && isOnAuthorDomain ? 'Author (relative - same domain)' 
+              : isUniversalEditor ? 'Author (via proxy)' 
+              : 'Publish (direct)',
       contentPath,
       variationName
     });
     
     // Make GET request to GraphQL endpoint
-    // In Universal Editor: uses author proxy with automatic authentication
-    // In EDS site: direct to publish with CORS headers
     const fetchOptions = {
       method: 'GET',
       headers: {
@@ -64,7 +77,7 @@ export default async function decorate(block) {
       }
     };
     
-    // Include credentials when using proxy to pass through authentication cookies
+    // Include credentials in Universal Editor to use existing AEM authentication
     if (isUniversalEditor) {
       fetchOptions.credentials = 'include';
     }
@@ -72,6 +85,17 @@ export default async function decorate(block) {
     const response = await fetch(graphqlUrl, fetchOptions);
 
     if (!response.ok) {
+      // Log detailed error information for 403
+      if (response.status === 403) {
+        console.error('403 Forbidden - Authentication issue:', {
+          url: graphqlUrl,
+          isUniversalEditor,
+          isOnAuthorDomain,
+          hostname: window.location.hostname,
+          fullLocation: window.location.href,
+          credentials: fetchOptions.credentials
+        });
+      }
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
@@ -163,13 +187,19 @@ export default async function decorate(block) {
 
   } catch (error) {
     // Enhanced error logging
+    const endpointType = isUniversalEditor && isOnAuthorDomain ? 'Author (relative - same domain)' 
+                       : isUniversalEditor ? 'Author (via proxy)' 
+                       : 'Publish (direct)';
+    
     console.error('Error loading Content Fragment:', {
       error: error.message,
       stack: error.stack,
       contentPath,
       variationName,
       isUniversalEditor,
-      endpoint: isUniversalEditor ? 'Author (via proxy)' : 'Publish (direct)'
+      isOnAuthorDomain,
+      hostname: window.location.hostname,
+      endpointType
     });
     
     // Show error message
@@ -178,6 +208,7 @@ export default async function decorate(block) {
         <p>Failed to load content fragment</p>
         <p class="error-details">Path: ${contentPath}</p>
         <p class="error-details">Error: ${error.message}</p>
+        <p class="error-details">Endpoint: ${endpointType}</p>
         <p class="error-details">Check console for more details</p>
       </div>
     `;
