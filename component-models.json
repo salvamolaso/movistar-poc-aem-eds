@@ -157,6 +157,10 @@
           {
             "name": "Highlight",
             "value": "highlight"
+          },
+          {
+            "name": "Cards Row",
+            "value": "cards-row"
           }
         ]
       }
