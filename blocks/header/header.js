@@ -315,20 +315,13 @@ function extractAuthoredData(block) {
 }
 
 /**
- * loads and decorates the header, mainly the nav
+ * Decorate and render the header navigation
  * @param {Element} block The header block element
  */
-export default async function decorate(block) {
-  // Prevent re-decoration
-  if (block.dataset.decorated === 'true') {
-    return;
-  }
-  block.dataset.decorated = 'true';
-  
+function decorateHeader(block) {
   let nav;
   
   // Check if block has authored content (Universal Editor)
-  // Universal Editor creates a table-like structure with rows and cells
   const hasAuthoredContent = block.children.length > 0;
   
   if (hasAuthoredContent) {
@@ -336,7 +329,6 @@ export default async function decorate(block) {
     const data = extractAuthoredData(block);
     
     // Always use authored content if block has any children
-    // Create nav with whatever data we have
     nav = createAuthoredNav(data);
     block.textContent = '';
   } else {
@@ -377,4 +369,35 @@ export default async function decorate(block) {
   navWrapper.className = 'nav-wrapper';
   navWrapper.append(nav);
   block.append(navWrapper);
+}
+
+/**
+ * Main decorator function - loads and decorates the header
+ * @param {Element} block The header block element
+ */
+export default async function decorate(block) {
+  // Initial decoration
+  decorateHeader(block);
+  
+  // Listen for Universal Editor updates
+  // When content is updated in Universal Editor, re-decorate
+  const observer = new MutationObserver((mutations) => {
+    // Check if this is a content update (not our own decoration)
+    const isContentUpdate = mutations.some(mutation => 
+      mutation.type === 'childList' && 
+      mutation.addedNodes.length > 0 &&
+      !mutation.target.classList.contains('nav-wrapper')
+    );
+    
+    if (isContentUpdate) {
+      // Content was updated in Universal Editor, re-decorate
+      decorateHeader(block);
+    }
+  });
+  
+  // Observe changes to the block's children
+  observer.observe(block, {
+    childList: true,
+    subtree: false
+  });
 }
