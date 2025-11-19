@@ -4,9 +4,18 @@
  * @param {Element} block - The block element
  */
 export default async function decorate(block) {
-  // Configuration - Direct to AEM Publish
-  const AEM_PUBLISH_URL = 'https://publish-p171966-e1846391.adobeaemcloud.com';
-  const GRAPHQL_ENDPOINT = '/graphql/execute.json/global/CTAByPath';
+  // Configuration - Use proxy for CORS-free requests in Universal Editor
+  const isUniversalEditor = window.location.pathname.includes('.html') 
+                            || window.self !== window.top 
+                            || document.referrer.includes('adobe.com');
+  
+  // Use author proxy in Universal Editor (authenticated via session), publish for EDS site
+  // Proxy endpoints are defined in fstab.yaml - no CORS issues, no manual login needed
+  const AEM_BASE_URL = isUniversalEditor 
+    ? '/graphql-author'  // Uses author instance proxy - automatic authentication
+    : 'https://publish-p171966-e1846391.adobeaemcloud.com/graphql'; // Direct to publish
+  
+  const GRAPHQL_ENDPOINT = '/execute.json/global/CTAByPath';
   
   // Extract parameters from block content
   const contentPath = block.querySelector(':scope div:nth-child(1) > div a')?.textContent?.trim() 
@@ -35,11 +44,19 @@ export default async function decorate(block) {
     const encodedParams = params.replace(/;/g, '%3B').replace(/=/g, '%3D');
     
     // Build the complete GraphQL URL
-    const graphqlUrl = `${AEM_PUBLISH_URL}${GRAPHQL_ENDPOINT}${encodedParams}`;
+    const graphqlUrl = `${AEM_BASE_URL}${GRAPHQL_ENDPOINT}${encodedParams}`;
     
-    console.log('Fetching Content Fragment from:', graphqlUrl);
-
+    console.log('Content Fragment Configuration:', {
+      url: graphqlUrl,
+      isUniversalEditor,
+      endpoint: isUniversalEditor ? 'Author (via proxy)' : 'Publish (direct)',
+      contentPath,
+      variationName
+    });
+    
     // Make GET request to GraphQL endpoint
+    // In Universal Editor: uses author proxy with automatic authentication
+    // In EDS site: direct to publish with CORS headers
     const response = await fetch(graphqlUrl, {
       method: 'GET',
       headers: {
@@ -138,11 +155,14 @@ export default async function decorate(block) {
     console.log('Content Fragment rendered successfully');
 
   } catch (error) {
+    // Enhanced error logging
     console.error('Error loading Content Fragment:', {
       error: error.message,
       stack: error.stack,
       contentPath,
-      variationName
+      variationName,
+      isUniversalEditor,
+      endpoint: isUniversalEditor ? 'Author (via proxy)' : 'Publish (direct)'
     });
     
     // Show error message
@@ -151,6 +171,7 @@ export default async function decorate(block) {
         <p>Failed to load content fragment</p>
         <p class="error-details">Path: ${contentPath}</p>
         <p class="error-details">Error: ${error.message}</p>
+        <p class="error-details">Check console for more details</p>
       </div>
     `;
   }
