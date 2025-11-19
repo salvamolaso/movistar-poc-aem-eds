@@ -143,6 +143,7 @@ function parseNavItems(navItemsText) {
  * @returns {Element} Navigation element
  */
 function createAuthoredNav(data) {
+  console.log('Creating nav from data:', data);
   const nav = document.createElement('nav');
   nav.id = 'nav';
 
@@ -150,16 +151,16 @@ function createAuthoredNav(data) {
   const brandDiv = document.createElement('div');
   brandDiv.classList.add('nav-brand');
   const logoLink = document.createElement('a');
-  logoLink.href = data.logoLink || '/';
-  logoLink.setAttribute('aria-label', data.logoAlt || 'Home');
+  logoLink.href = data.logoLink || data.logoLinkUrl || '/';
+  logoLink.setAttribute('aria-label', data.logoAlt || data.logoAltText || 'Home');
   
-  if (data.logo) {
+  if (data.logo || data.logoImage) {
     const logoImg = document.createElement('img');
-    logoImg.src = data.logo;
-    logoImg.alt = data.logoAlt || 'Logo';
+    logoImg.src = data.logo || data.logoImage;
+    logoImg.alt = data.logoAlt || data.logoAltText || 'Logo';
     logoLink.appendChild(logoImg);
   } else {
-    logoLink.textContent = data.logoAlt || 'Logo';
+    logoLink.textContent = data.logoAlt || data.logoAltText || 'Logo';
   }
   
   brandDiv.appendChild(logoLink);
@@ -287,8 +288,12 @@ function createAuthoredNav(data) {
 function extractAuthoredData(block) {
   const data = {};
   
-  [...block.children].forEach((row) => {
+  console.log('Extracting data from block with', block.children.length, 'rows');
+  
+  [...block.children].forEach((row, index) => {
     const cells = [...row.children];
+    console.log(`Row ${index}: ${cells.length} cells`, row.innerHTML);
+    
     if (cells.length >= 2) {
       const key = cells[0].textContent.trim();
       
@@ -298,18 +303,24 @@ function extractAuthoredData(block) {
       
       if (img) {
         value = img.src;
+        console.log(`  Found image for "${key}":`, value);
       } else {
         // For richtext fields, get innerHTML; for text fields, get textContent
         const hasHtml = cells[1].querySelector('p, div, br');
         value = hasHtml ? cells[1].innerHTML.trim() : cells[1].textContent.trim();
+        console.log(`  Found text for "${key}":`, value);
       }
       
       // Convert key to camelCase
       const camelKey = key.replace(/[-\s](.)/g, (_, char) => char.toUpperCase()).replace(/^./, str => str.toLowerCase());
       data[camelKey] = value;
+      console.log(`  Mapped "${key}" -> "${camelKey}"`);
+    } else if (cells.length === 1) {
+      console.log(`  Row ${index} has only 1 cell, skipping`);
     }
   });
   
+  console.log('Final extracted data:', data);
   return data;
 }
 
@@ -320,14 +331,55 @@ function extractAuthoredData(block) {
 export default async function decorate(block) {
   let nav;
   
+  // Debug: Log block structure
+  console.log('Header block children count:', block.children.length);
+  console.log('Header block HTML:', block.innerHTML);
+  
   // Check if block has authored content (Universal Editor)
-  if (block.children.length > 0 && block.querySelector('div > div')) {
+  // Universal Editor creates a table-like structure with rows and cells
+  const hasAuthoredContent = block.children.length > 0 && 
+    (block.querySelector('div > div') || 
+     block.querySelector('[data-aue-prop]') ||
+     block.firstElementChild?.children?.length > 0);
+  
+  if (hasAuthoredContent) {
     // Authored content from Universal Editor
+    console.log('Using authored content from Universal Editor');
     const data = extractAuthoredData(block);
-    nav = createAuthoredNav(data);
-    block.textContent = '';
+    console.log('Extracted data:', data);
+    
+    // Check if we have minimal required data
+    if (Object.keys(data).length > 0) {
+      nav = createAuthoredNav(data);
+      block.textContent = '';
+    } else {
+      console.warn('No data extracted from block, falling back to fragment');
+      // Fall back to fragment if extraction failed
+      const navMeta = getMetadata('nav');
+      const navPath = navMeta ? new URL(navMeta, window.location).pathname : '/nav';
+      const fragment = await loadFragment(navPath);
+
+      block.textContent = '';
+      nav = document.createElement('nav');
+      nav.id = 'nav';
+      while (fragment.firstElementChild) nav.append(fragment.firstElementChild);
+
+      const classes = ['brand', 'sections', 'tools'];
+      classes.forEach((c, i) => {
+        const section = nav.children[i];
+        if (section) section.classList.add(`nav-${c}`);
+      });
+
+      const navBrand = nav.querySelector('.nav-brand');
+      const brandLink = navBrand?.querySelector('.button');
+      if (brandLink) {
+        brandLink.className = '';
+        brandLink.closest('.button-container').className = '';
+      }
+    }
   } else {
     // Load nav as fragment (legacy approach)
+    console.log('Using fragment-based navigation');
     const navMeta = getMetadata('nav');
     const navPath = navMeta ? new URL(navMeta, window.location).pathname : '/nav';
     const fragment = await loadFragment(navPath);
