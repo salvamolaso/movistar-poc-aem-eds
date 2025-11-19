@@ -18,14 +18,23 @@ export default async function decorate(block) {
     const li = document.createElement('li');
     moveInstrumentation(row, li);
     
-    // Create a temporary container for the content-fragment block
+    // Create a content-fragment block that preserves the row structure
     const contentFragmentBlock = document.createElement('div');
     contentFragmentBlock.className = 'content-fragment';
     
-    // Move all row content into the content-fragment block
-    while (row.firstElementChild) {
-      contentFragmentBlock.append(row.firstElementChild);
-    }
+    // Clone the row's children to preserve the block structure expected by content-fragment.js
+    // content-fragment.js expects: block > div (row) > div (cell)
+    [...row.children].forEach((cell) => {
+      const newRow = document.createElement('div');
+      const newCell = document.createElement('div');
+      newCell.innerHTML = cell.innerHTML;
+      // Copy any attributes from the original cell
+      Array.from(cell.attributes).forEach(attr => {
+        newCell.setAttribute(attr.name, attr.value);
+      });
+      newRow.appendChild(newCell);
+      contentFragmentBlock.appendChild(newRow);
+    });
     
     // Add the content-fragment block to the li
     li.append(contentFragmentBlock);
