@@ -257,35 +257,51 @@ main .section.highlight {
 }
 
 /* Horizontal cards layout - displays content fragments in a row */
-main .section.cards-row .content-fragment > ul {
+main .section.cards-row > div {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   gap: 24px;
-  justify-content: space-between;
+  justify-content: flex-start;
+  align-items: stretch;
 }
 
-main .section.cards-row .content-fragment > ul > li {
-  flex: 1 1 calc(25% - 24px);
+main .section.cards-row .content-fragment-wrapper {
+  flex: 1 1 calc(25% - 18px);
   min-width: 257px;
   max-width: 400px;
 }
 
+main .section.cards-row .content-fragment {
+  height: 100%;
+}
+
+main .section.cards-row .content-fragment > ul {
+  height: 100%;
+  display: block;
+}
+
+main .section.cards-row .content-fragment > ul > li {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
 /* Responsive behavior for horizontal cards */
 @media (width < 1200px) {
-  main .section.cards-row .content-fragment > ul > li {
-    flex: 1 1 calc(33.333% - 24px);
+  main .section.cards-row .content-fragment-wrapper {
+    flex: 1 1 calc(33.333% - 16px);
   }
 }
 
 @media (width < 900px) {
-  main .section.cards-row .content-fragment > ul > li {
-    flex: 1 1 calc(50% - 24px);
+  main .section.cards-row .content-fragment-wrapper {
+    flex: 1 1 calc(50% - 12px);
   }
 }
 
 @media (width < 600px) {
-  main .section.cards-row .content-fragment > ul > li {
+  main .section.cards-row .content-fragment-wrapper {
     flex: 1 1 100%;
   }
 }
