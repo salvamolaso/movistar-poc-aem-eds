@@ -143,7 +143,6 @@ function parseNavItems(navItemsText) {
  * @returns {Element} Navigation element
  */
 function createAuthoredNav(data) {
-  console.log('Creating nav from data:', data);
   const nav = document.createElement('nav');
   nav.id = 'nav';
 
@@ -288,11 +287,8 @@ function createAuthoredNav(data) {
 function extractAuthoredData(block) {
   const data = {};
   
-  console.log('Extracting data from block with', block.children.length, 'rows');
-  
-  [...block.children].forEach((row, index) => {
+  [...block.children].forEach((row) => {
     const cells = [...row.children];
-    console.log(`Row ${index}: ${cells.length} cells`, row.innerHTML);
     
     if (cells.length >= 2) {
       const key = cells[0].textContent.trim();
@@ -303,24 +299,18 @@ function extractAuthoredData(block) {
       
       if (img) {
         value = img.src;
-        console.log(`  Found image for "${key}":`, value);
       } else {
         // For richtext fields, get innerHTML; for text fields, get textContent
         const hasHtml = cells[1].querySelector('p, div, br');
         value = hasHtml ? cells[1].innerHTML.trim() : cells[1].textContent.trim();
-        console.log(`  Found text for "${key}":`, value);
       }
       
       // Convert key to camelCase
       const camelKey = key.replace(/[-\s](.)/g, (_, char) => char.toUpperCase()).replace(/^./, str => str.toLowerCase());
       data[camelKey] = value;
-      console.log(`  Mapped "${key}" -> "${camelKey}"`);
-    } else if (cells.length === 1) {
-      console.log(`  Row ${index} has only 1 cell, skipping`);
     }
   });
   
-  console.log('Final extracted data:', data);
   return data;
 }
 
@@ -329,11 +319,13 @@ function extractAuthoredData(block) {
  * @param {Element} block The header block element
  */
 export default async function decorate(block) {
-  let nav;
+  // Prevent re-decoration
+  if (block.dataset.decorated === 'true') {
+    return;
+  }
+  block.dataset.decorated = 'true';
   
-  // Debug: Log block structure
-  console.log('Header block children count:', block.children.length);
-  console.log('Header block HTML:', block.innerHTML);
+  let nav;
   
   // Check if block has authored content (Universal Editor)
   // Universal Editor creates a table-like structure with rows and cells
@@ -344,16 +336,13 @@ export default async function decorate(block) {
   
   if (hasAuthoredContent) {
     // Authored content from Universal Editor
-    console.log('Using authored content from Universal Editor');
     const data = extractAuthoredData(block);
-    console.log('Extracted data:', data);
     
     // Check if we have minimal required data
     if (Object.keys(data).length > 0) {
       nav = createAuthoredNav(data);
       block.textContent = '';
     } else {
-      console.warn('No data extracted from block, falling back to fragment');
       // Fall back to fragment if extraction failed
       const navMeta = getMetadata('nav');
       const navPath = navMeta ? new URL(navMeta, window.location).pathname : '/nav';
@@ -379,7 +368,6 @@ export default async function decorate(block) {
     }
   } else {
     // Load nav as fragment (legacy approach)
-    console.log('Using fragment-based navigation');
     const navMeta = getMetadata('nav');
     const navPath = navMeta ? new URL(navMeta, window.location).pathname : '/nav';
     const fragment = await loadFragment(navPath);
