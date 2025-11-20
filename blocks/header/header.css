@@ -188,7 +188,7 @@ header .section.search-container {
   display: flex;
   align-items: center;
   width: 100%;
-  max-width: 600px;
+  max-width: 800px;
   justify-self: center;
   padding: 0;
   margin: 0;
@@ -209,8 +209,9 @@ header .section.search-container .search.block {
 }
 
 header .search-container .search-form {
-  max-width: 100%;
-  margin: 0;
+    max-width: 100%;
+    margin: 0;
+    margin-bottom: 20px;
 }
 
 @media (width < 900px) {
@@ -339,7 +340,7 @@ header nav .section .default-content-wrapper > ul {
   list-style: none;
   padding: 0;
   margin: 0;
-  font-size: 14px;
+  font-size: 15px;
 }
 
 header nav .section .default-content-wrapper > ul > li {
@@ -408,6 +409,10 @@ body {
 
 /* Highlight for special nav items like "Ofertas Black Friday" */
 header nav .section .default-content-wrapper > ul > li:first-child {
-  color: #5cb615;
-  font-weight: 500;
+color: #403F3D !important;
+    -webkit-text-decoration: solid underline currentColor 2px;
+    text-decoration: solid underline currentColor 2px;
+    text-underline-offset: 4px;
+    -webkit-text-decoration-skip-ink: none;
+    text-decoration-skip-ink: none;
 }

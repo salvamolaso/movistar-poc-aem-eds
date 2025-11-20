@@ -10,6 +10,8 @@
  * governing permissions and limitations under the License.
  */
 
+ @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&family=Stack+Sans+Text:wght@200..700&display=swap');
+
 :root {
   /* colors */
   --background-color: white;
@@ -20,8 +22,8 @@
   --link-hover-color: #1d3ecf;
 
   /* fonts */
-  --body-font-family: roboto, roboto-fallback, sans-serif;
-  --heading-font-family: roboto-condensed, roboto-condensed-fallback, sans-serif;
+  --body-font-family:  "Manrope", sans-serif;
+  --heading-font-family:  "Manrope", sans-serif;
 
   /* body sizes */
   --body-font-size-m: 22px;
@@ -42,13 +44,13 @@
 
 /* fallback fonts */
 @font-face {
-  font-family: roboto-condensed-fallback;
+  font-family:  "Manrope", sans-serif;
   size-adjust: 88.82%;
   src: local('Arial');
 }
 
 @font-face {
-  font-family: roboto-fallback;
+  font-family:  "Manrope", sans-serif;
   size-adjust: 99.529%;
   src: local('Arial');
 }
