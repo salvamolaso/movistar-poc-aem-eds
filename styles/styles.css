@@ -318,7 +318,7 @@ main .section.highlight {
     margin: 0;
     margin-bottom: 5px;
   }
-  
+
 .content-fragments > ul {
     list-style: none;
     margin: 0;
@@ -328,4 +328,48 @@ main .section.highlight {
     width: 100%;
     display: flex;
     grid-gap: 24px;
+}
+
+
+.section.carousel-container {
+    background: #262423;
+    color: #fff;
+}
+
+.carousel-container .carousel-wrapper .carousel {
+    padding: 40px 5%;
+    position: relative;
+    overflow: hidden;
+    max-width: 1480px;
+    margin: 0 auto;
+}
+
+
+.carousel-container .carousel-wrapper  a.button.secondary {
+    background-color: unset;
+    border: 2px solid currentcolor;
+    color: #fff;
+    border-radius: 8px;
+    font-size: 14px;
+    background-color: #fff;
+    border: 1.5px solid #0b2739;
+    color: #0b2739;
+}
+
+
+a.button.secondary, button.secondary {
+    background-color: unset;
+    border: 2px solid currentcolor;
+    color: #fff;
+    border-radius: 8px;
+    font-size: 14px;
+    background-color: #fff;
+    border: 1.5px solid #0b2739;
+    color: #0b2739;
+    height: 48px;
+    width: 246px;
+    vertical-align: middle;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

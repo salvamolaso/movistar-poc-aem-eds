@@ -27,7 +27,7 @@
   }
 
   .carousel-container .carousel-wrapper .carousel {
-  padding: 40px 5%;
+  padding: 20px 5% 0px 5%;
     position: relative;
   overflow: hidden;
   }
@@ -230,23 +230,34 @@
 /* ============================================
    NAVIGATION BUTTONS - Bigger and Darker
    ============================================ */
-
 .carousel-nav {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background: rgba(0, 0, 0, 0.7);
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    /* background: rgb(255 255 255 / 0%); */
     border: none;
-  border-radius: 50%;
-  width: 60px;
-  height: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  z-index: 10;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    border-radius: 50%;
+    width: 52px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.3s 
+ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    position: absolute;
+    padding: 10px 15px;
+    background-color: var(--ms-White);
+    color: var(--ms-grey700);
+    border: 1px solid var(--ms-grey300);
+    border-radius: 50px;
+    font-size: 1rem;
+    cursor: pointer;
+    z-index: 4;
+    direction: ltr;
+    background: #fff;
 }
 
 .carousel-nav:hover:not(:disabled) {
@@ -258,7 +269,7 @@
 .carousel-nav svg {
   width: 32px;
   height: 32px;
-  color: #fff;
+  color: #000;
 }
 
 .carousel-nav-prev {
