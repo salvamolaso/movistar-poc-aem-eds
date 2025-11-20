@@ -176,7 +176,7 @@ footer .section.columns-container:last-of-type .columns-img-col img {
 footer > div > div > .section:last-child {
     text-align: center;
     padding-top: 20px;
-    border-top: 1px solid rgb(255 255 255);
+    border-top: 1px solid rgba(255, 255, 255, 0.5);
 }
 
 footer > div > div > .section:last-child .default-content-wrapper {
@@ -307,7 +307,7 @@ footer .columns-img-col picture:hover {
 }
 
 footer .section.columns-container:first-child {
-    border-bottom: 1px solid rgb(255 255 255 / 100%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.5);
     padding-bottom: 20px;
 }
 
@@ -321,6 +321,18 @@ footer .columns-img-col img {
 }
 
 .columns.block.columns-3-cols {
-    border-top: 1px solid #fff;
+    border-top: 1px solid rgba(255, 255, 255, 0.5);;
     padding: 10px 0;
 }
+
+.columns > div > .columns-img-col {
+    order: 0;
+    flex: none;
+    justify-content: center;
+    text-align: center;
+    /* margin: 0 auto; */
+}
+
+.footer .columns div {
+    justify-content: center;
+    }
