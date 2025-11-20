@@ -1,20 +1,18 @@
 /* Footer styling */
 footer {
-  background: linear-gradient(180deg, #0B6CFF 0%, #0952CC 100%);
-  color: #fff;
-  padding: 50px 0 30px;
-  margin-top: auto;
+    background: #06f;
+    color: #fff;
+    padding: 20px 0 30px;
+    margin-top: auto;
 }
-
 footer .footer {
-  max-width: 1440px;
-  margin: 0 auto;
-  padding: 0 24px;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 0px;
 }
-
 /* Social media icons section - first columns block */
 footer .section.columns-container:first-child {
-  margin-bottom: 35px;
+    margin-bottom: 15px;
 }
 
 footer .section.columns-container:first-child .columns {
@@ -27,11 +25,12 @@ footer .section.columns-container:first-child .columns {
 }
 
 footer .section.columns-container:first-child .columns > div {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 30px;
-  width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 100px;
+    width: 100%;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
 }
 
 footer .section.columns-container:first-child .columns-img-col {
@@ -305,4 +304,18 @@ footer * {
 /* Additional hover states for better UX */
 footer .columns-img-col picture:hover {
   filter: brightness(1.1);
+}
+
+footer .section.columns-container:first-child {
+    border-bottom: 1px solid rgb(255 255 255 / 100%);
+    padding-bottom: 20px;
+}
+
+footer .section:not(.columns-container) .default-content-wrapper {
+    margin: 0px 0 20px 0;
+    padding: 0;
+}
+
+footer .columns-img-col img {
+    height: 34px;
 }
