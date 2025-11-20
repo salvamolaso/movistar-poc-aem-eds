@@ -174,9 +174,9 @@ footer .section.columns-container:last-of-type .columns-img-col img {
 
 /* Telefónica logo section - last section with image */
 footer > div > div > .section:last-child {
-  text-align: center;
-  padding-top: 30px;
-  border-top: 1px solid rgba(255, 255, 255, 0.25);
+    text-align: center;
+    padding-top: 20px;
+    border-top: 1px solid rgb(255 255 255);
 }
 
 footer > div > div > .section:last-child .default-content-wrapper {
@@ -318,4 +318,9 @@ footer .section:not(.columns-container) .default-content-wrapper {
 
 footer .columns-img-col img {
     height: 34px;
+}
+
+.columns.block.columns-3-cols {
+    border-top: 1px solid #fff;
+    padding: 10px 0;
 }
