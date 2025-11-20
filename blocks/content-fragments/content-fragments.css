@@ -5,22 +5,32 @@
 }
 
 .content-fragments > ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(257px, 1fr));
-  grid-gap: 6px;
-  align-items: stretch;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    align-items: stretch;
+    width: 100%;
+    display: flex;
+    grid-gap: 24px;
 }
 
-.content-fragments > ul > li {
-  /* Remove border as content-fragment block will have its own styling */
-  display: flex;
-  flex-direction: column;
-  height: 100%;
+.content-fragment > ul > li {
+  border: 1px solid #dadada;
+  background-color: var(--background-color);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    flex: 1;
+    min-width: 200px;
+    box-sizing: border-box;
+    /* padding: 10px; */
+    /* background-color: lightblue; */
+    /* margin: 5px; */
+    grid-gap: 24px;
+    border-radius: 16px;
+    overflow: hidden;
 }
-
 /* Override content-fragment styles when inside content-fragments container */
 .content-fragments .content-fragment {
   display: flex;
@@ -68,4 +78,13 @@
 }
 .content-fragments-wrapper{
   padding: 0;
+}
+
+.content-fragments ul li {
+    flex: 1;
+    min-width: 200px;
+    /* box-sizing: border-box; */
+    /* padding: 10px; */
+    /* background-color: lightblue; */
+    /* margin: 5px; */
 }
