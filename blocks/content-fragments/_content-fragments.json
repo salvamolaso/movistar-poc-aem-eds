@@ -51,52 +51,6 @@
           "valueType": "string",
           "description": "Persisted variation for publish; leave empty for master.",
           "condition": { "==": [ { "var": "__alwaysFalse" }, true ] }
-        },
-        {
-          "component": "select",
-          "name": "displaystyle",
-          "label": "Style",
-          "options": [
-            {
-              "name": "default",
-              "value": ""
-            },
-            {
-              "name": "Image Left",
-              "value": "image-left"
-            },
-            {
-              "name": "Image Right",
-              "value": "image-right"
-            },
-            {
-              "name": "Image Top",
-              "value": "image-top"
-            },
-            {
-              "name": "Image Bottom",
-              "value": "image-bottom"
-            }
-          ]
-        },
-        {
-          "component": "select",
-          "name": "alignment",
-          "label": "Alignment",
-          "options": [
-            {
-              "name": "Text Left",
-              "value": "text-left"
-            },
-            {
-              "name": "Text Right",
-              "value": "text-right"
-            },
-            {
-              "name": "Text Center",
-              "value": "text-center"
-            }
-          ]
         }
       ]
     }
