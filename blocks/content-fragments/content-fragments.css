@@ -88,3 +88,83 @@
     /* background-color: lightblue; */
     /* margin: 5px; */
 }
+
+/* First content fragment special styling */
+.content-fragments .first-content-fragment {
+  background: linear-gradient(180deg, #1a3a52 0%, #0d1f2d 100%);
+  color: white;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.content-fragments .first-content-fragment .content-fragment-card-body {
+  padding: 32px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.content-fragments .first-content-fragment .content-fragment-card-body p {
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* First paragraph - "Configura tu pack" - small header */
+.content-fragments .first-content-fragment .content-fragment-card-body p:nth-child(1) {
+  font-size: 16px;
+  font-weight: 400;
+  opacity: 0.9;
+  margin-bottom: 8px;
+  background-color: transparent !important;
+  padding: 0;
+  display: block;
+}
+
+/* Second, third, fourth paragraphs - Main heading */
+.content-fragments .first-content-fragment .content-fragment-card-body p:nth-child(2),
+.content-fragments .first-content-fragment .content-fragment-card-body p:nth-child(3),
+.content-fragments .first-content-fragment .content-fragment-card-body p:nth-child(4) {
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.5px;
+}
+
+/* Fifth paragraph - Description */
+.content-fragments .first-content-fragment .content-fragment-card-body p:nth-child(5) {
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.5;
+  margin-top: 8px;
+  margin-bottom: 24px;
+}
+
+/* Sixth paragraph - "Desde" */
+.content-fragments .first-content-fragment .content-fragment-card-body p:nth-child(6) {
+  font-size: 40px;
+  font-weight: 400;
+  margin-bottom: 4px;
+}
+
+/* Seventh paragraph - Price "73,81 €/mes" */
+.content-fragments .first-content-fragment .content-fragment-card-body p:nth-child(7) {
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+
+/* Eighth paragraph - "IVA incluido. Sin permanencia" */
+.content-fragments .first-content-fragment .content-fragment-card-body p:nth-child(8) {
+  font-size: 12px;
+  font-weight: 400;
+  opacity: 0.85;
+  line-height: 1.3;
+}
+
+/* Remove border for first content fragment */
+.content-fragments .first-content-fragment .content-fragment > ul > li {
+  border: none;
+  background: transparent;
+}

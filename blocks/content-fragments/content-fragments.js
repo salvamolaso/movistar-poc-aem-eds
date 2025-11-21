@@ -14,9 +14,14 @@ export default async function decorate(block) {
   // Dynamically import the content-fragment block decorator
   const { default: contentFragmentDecorate } = await import('../content-fragment/content-fragment.js');
   
-  [...block.children].forEach((row) => {
+  [...block.children].forEach((row, index) => {
     const li = document.createElement('li');
     moveInstrumentation(row, li);
+    
+    // Add class to the first content fragment item
+    if (index === 0) {
+      li.classList.add('first-content-fragment');
+    }
     
     // Create a content-fragment block that preserves the row structure
     const contentFragmentBlock = document.createElement('div');
