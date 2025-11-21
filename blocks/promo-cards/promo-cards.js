@@ -44,7 +44,6 @@ function createCard(cardData) {
     const img = document.createElement('img');
     img.src = imageUrl;
     img.alt = cardData.CardTitle || 'Product image';
-    img.loading = 'lazy';
     imageWrapper.appendChild(img);
   } else {
     // Relative paths (AEM): use createOptimizedPicture
