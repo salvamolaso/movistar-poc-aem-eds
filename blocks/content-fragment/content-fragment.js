@@ -101,14 +101,17 @@ export default async function decorate(block) {
     
     console.log('Content Fragment Response:', data);
 
-    // Extract content fragment data
-    const cfData = data?.data?.ctaByPath?.item;
+    // Extract content fragment data from the new model structure
+    const cfData = data?.data?.telephonicaDemoModelByPath?.item;
 
     if (!cfData) {
       throw new Error('No content fragment data found in response');
     }
 
-    // Extract data with fallbacks
+    // Extract data with fallbacks for the new model
+    const title = cfData.title || '';
+    const discount = cfData.discount || '';
+    const model = cfData.model || '';
     const description = cfData.description?.plaintext || '';
     
     // Use _publishUrl for images in EDS, _authorUrl for Universal Editor
@@ -119,7 +122,7 @@ export default async function decorate(block) {
     // Universal Editor attributes
     const itemId = `urn:aemconnection:${contentPath}/jcr:content/data/${variationName}`;
 
-    // Render the content fragment as a card (same structure as cards block)
+    // Render the content fragment as a card with new fields
     block.innerHTML = `
       <ul>
         <li data-aue-resource="${itemId}" 
@@ -130,21 +133,40 @@ export default async function decorate(block) {
           ${imageUrl ? `
             <div class='content-fragment-card-image'>
               <img src="${imageUrl}" 
-                   alt="${description.substring(0, 50)}" 
+                   alt="${title || description.substring(0, 50)}" 
                    data-aue-prop="bannerimage" 
                    data-aue-label="Banner Image" 
                    data-aue-type="media">
             </div>
           ` : ''}
           
-          ${description ? `
-            <div class='content-fragment-card-body' 
-                 data-aue-prop="description" 
-                 data-aue-label="Description" 
-                 data-aue-type="richtext">
-              ${description.split('\n').filter(line => line.trim()).map(line => `<p>${line}</p>`).join('')}
-            </div>
-          ` : ''}
+          <div class='content-fragment-card-body'>
+            ${discount ? `
+              <p data-aue-prop="discount" 
+                 data-aue-label="Discount" 
+                 data-aue-type="text">${discount}</p>
+            ` : ''}
+            
+            ${model ? `
+              <p data-aue-prop="model" 
+                 data-aue-label="Model" 
+                 data-aue-type="text">${model}</p>
+            ` : ''}
+            
+            ${title ? `
+              <p data-aue-prop="title" 
+                 data-aue-label="Title" 
+                 data-aue-type="text">${title}</p>
+            ` : ''}
+            
+            ${description ? `
+              <div data-aue-prop="description" 
+                   data-aue-label="Description" 
+                   data-aue-type="richtext">
+                ${description.split('\n').filter(line => line.trim()).map(line => `<p>${line}</p>`).join('')}
+              </div>
+            ` : ''}
+          </div>
           
         </li>
       </ul>
