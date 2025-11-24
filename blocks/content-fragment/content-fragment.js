@@ -31,7 +31,7 @@ export default async function decorate(block) {
   // Extract parameters from block content
   const contentPath = block.querySelector(':scope div:nth-child(1) > div a')?.textContent?.trim() 
                       || block.querySelector(':scope div:nth-child(1) > div')?.textContent?.trim();
-  const variationName = block.querySelector(':scope div:nth-child(2) > div')?.textContent?.trim()?.toLowerCase()?.replace(' ', '_') || 'master';
+  const variationName = block.querySelector(':scope div:nth-child(2) > div')?.textContent?.trim()?.toLowerCase()?.replace(' ', '_') || 'main';
 
   // Validate content path
   if (!contentPath) {
@@ -56,6 +56,7 @@ export default async function decorate(block) {
     
     console.log('Content Fragment Configuration:', {
       url: graphqlUrl,
+      queryName: 'getFragment',
       isUniversalEditor,
       isOnAuthorDomain,
       hostname: window.location.hostname,
@@ -63,7 +64,8 @@ export default async function decorate(block) {
               : isUniversalEditor ? 'Author (via proxy)' 
               : 'Publish (direct)',
       contentPath,
-      variationName
+      variationName,
+      fullUrl: graphqlUrl
     });
     
     // Make GET request to GraphQL endpoint
@@ -82,30 +84,49 @@ export default async function decorate(block) {
     const response = await fetch(graphqlUrl, fetchOptions);
 
     if (!response.ok) {
-      // Log detailed error information for 403
+      // Log detailed error information
+      const errorDetails = {
+        url: graphqlUrl,
+        status: response.status,
+        statusText: response.statusText,
+        isUniversalEditor,
+        isOnAuthorDomain,
+        hostname: window.location.hostname,
+        fullLocation: window.location.href,
+        credentials: fetchOptions.credentials
+      };
+      
       if (response.status === 403) {
-        console.error('403 Forbidden - Authentication issue:', {
-          url: graphqlUrl,
-          isUniversalEditor,
-          isOnAuthorDomain,
-          hostname: window.location.hostname,
-          fullLocation: window.location.href,
-          credentials: fetchOptions.credentials
-        });
+        console.error('403 Forbidden - Authentication issue:', errorDetails);
+      } else if (response.status === 404) {
+        console.error('404 Not Found - GraphQL query or endpoint not found:', errorDetails);
+        throw new Error(`GraphQL query not found. Make sure 'getFragment' query is published in AEM.`);
+      } else {
+        console.error('HTTP error:', errorDetails);
       }
-      throw new Error(`HTTP error! status: ${response.status}`);
+      throw new Error(`HTTP error! status: ${response.status} - ${response.statusText}`);
     }
 
     // Parse JSON response
     const data = await response.json();
     
-    console.log('Content Fragment Response:', data);
+    // Log available query keys to help debug response structure
+    const availableQueries = data?.data ? Object.keys(data.data) : [];
+    console.log('Content Fragment Response:', {
+      availableQueries,
+      fullResponse: data
+    });
 
-    // Extract content fragment data from the new model structure
-    const cfData = data?.data?.telephonicaDemoModelByPath?.item;
+    // Extract content fragment data - try different response structures
+    // The new getFragment query uses fragmentByPath
+    let cfData = data?.data?.fragmentByPath?.item 
+                 || data?.data?.telephonicaDemoModelByPath?.item
+                 || data?.data?.ctaByPath?.item;
 
     if (!cfData) {
-      throw new Error('No content fragment data found in response');
+      console.error('Unable to find content fragment data. Available query keys:', availableQueries);
+      console.error('Full response structure:', JSON.stringify(data, null, 2));
+      throw new Error(`No content fragment data found. Available queries: ${availableQueries.join(', ') || 'none'}`);
     }
 
     // Extract data with fallbacks for the new model
@@ -160,7 +181,8 @@ export default async function decorate(block) {
             ` : ''}
             
             ${description ? `
-              <div data-aue-prop="description" 
+              <div class="cf-description" 
+                   data-aue-prop="description" 
                    data-aue-label="Description" 
                    data-aue-type="richtext">
                 ${description.split('\n').filter(line => line.trim()).map(line => `<p>${line}</p>`).join('')}
@@ -180,8 +202,14 @@ export default async function decorate(block) {
                        : isUniversalEditor ? 'Author (via proxy)' 
                        : 'Publish (direct)';
     
+    // Detect CORS errors
+    const isCorsError = error.message.includes('CORS') 
+                       || error.message.includes('NetworkError') 
+                       || error.name === 'TypeError' && !error.message.includes('HTTP error');
+    
     console.error('Error loading Content Fragment:', {
       error: error.message,
+      errorType: isCorsError ? 'CORS Error' : 'Other Error',
       stack: error.stack,
       contentPath,
       variationName,
@@ -192,13 +220,28 @@ export default async function decorate(block) {
     });
     
     // Show error message
+    let errorMessage = error.message;
+    let troubleshooting = 'Check console for more details';
+    
+    if (isCorsError) {
+      errorMessage = 'CORS Error: Unable to fetch content fragment';
+      troubleshooting = `
+        <strong>Troubleshooting:</strong><br>
+        1. Ensure the GraphQL persisted query 'getFragment' is published in AEM<br>
+        2. Check AEM CORS configuration allows requests from this domain<br>
+        3. Verify the content fragment is published<br>
+        4. Clear browser cache and AEM dispatcher cache
+      `;
+    }
+    
     block.innerHTML = `
       <div class="cf-error">
-        <p>Failed to load content fragment</p>
+        <p><strong>Failed to load content fragment</strong></p>
         <p class="error-details">Path: ${contentPath}</p>
-        <p class="error-details">Error: ${error.message}</p>
+        <p class="error-details">Variation: ${variationName}</p>
+        <p class="error-details">Error: ${errorMessage}</p>
         <p class="error-details">Endpoint: ${endpointType}</p>
-        <p class="error-details">Check console for more details</p>
+        <div class="error-details" style="margin-top: 12px;">${troubleshooting}</div>
       </div>
     `;
   }
