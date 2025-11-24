@@ -26,7 +26,7 @@ export default async function decorate(block) {
     graphqlBaseUrl = 'https://publish-p171966-e1846391.adobeaemcloud.com';
   }
   
-  const GRAPHQL_ENDPOINT = '/graphql/execute.json/global/CTAByPath';
+  const GRAPHQL_ENDPOINT = '/graphql/execute.json/global/getFragment';
   
   // Extract parameters from block content
   const contentPath = block.querySelector(':scope div:nth-child(1) > div a')?.textContent?.trim() 
