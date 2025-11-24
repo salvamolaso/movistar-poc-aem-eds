@@ -142,6 +142,11 @@ export default async function decorate(block) {
 
     // Universal Editor attributes
     const itemId = `urn:aemconnection:${contentPath}/jcr:content/data/${variationName}`;
+    
+    // Check if this is the first content fragment (likely to be LCP)
+    const isFirstFragment = block.closest('.first-content-fragment') !== null;
+    const fetchPriorityAttr = isFirstFragment ? ' fetchpriority="high"' : '';
+    const loadingAttr = isFirstFragment ? ' loading="eager"' : ' loading="lazy"';
 
     // Render the content fragment as a card with new fields
     block.innerHTML = `
@@ -154,7 +159,7 @@ export default async function decorate(block) {
           ${imageUrl ? `
             <div class='content-fragment-card-image'>
               <img src="${imageUrl}" 
-                   alt="${title || description.substring(0, 50)}" 
+                   alt="${title || description.substring(0, 50)}"${fetchPriorityAttr}${loadingAttr}
                    data-aue-prop="bannerimage" 
                    data-aue-label="Banner Image" 
                    data-aue-type="media">

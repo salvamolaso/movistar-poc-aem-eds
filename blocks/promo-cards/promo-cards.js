@@ -22,9 +22,10 @@ async function fetchCardData(apiEndpoint) {
 /**
  * Creates a single card element
  * @param {Object} cardData - Card data object
+ * @param {number} index - Card index for priority loading
  * @returns {HTMLElement} Card list item element
  */
-function createCard(cardData) {
+function createCard(cardData, index = 0) {
   const li = document.createElement('li');
   li.className = 'promo-card';
   
@@ -37,6 +38,7 @@ function createCard(cardData) {
   
   // Check if URL is external (starts with http:// or https://)
   const isExternalUrl = imageUrl.startsWith('http://') || imageUrl.startsWith('https://');
+  const isFirstCard = index === 0;
   
   if (isExternalUrl) {
     // External URLs: use simple img tag
@@ -44,6 +46,13 @@ function createCard(cardData) {
     const img = document.createElement('img');
     img.src = imageUrl;
     img.alt = cardData.CardTitle || 'Product image';
+    // Add fetchpriority and loading attributes for performance
+    if (isFirstCard) {
+      img.fetchPriority = 'high';
+      img.loading = 'eager';
+    } else {
+      img.loading = 'lazy';
+    }
     imageWrapper.appendChild(img);
   } else {
     // Relative paths (AEM): use createOptimizedPicture
@@ -51,9 +60,16 @@ function createCard(cardData) {
     const picture = createOptimizedPicture(
       imageUrl,
       cardData.CardTitle || 'Product image',
-      false,
+      !isFirstCard, // eager: false for first card (don't lazy load), true for others
       [{ width: '750' }]
     );
+    // Add fetchpriority to first card for LCP optimization
+    if (isFirstCard) {
+      const img = picture.querySelector('img');
+      if (img) {
+        img.fetchPriority = 'high';
+      }
+    }
     imageWrapper.appendChild(picture);
   }
   
@@ -121,9 +137,9 @@ export default async function decorate(block) {
   const ul = document.createElement('ul');
   ul.className = 'promo-cards-list';
   
-  // Create cards from API data
-  cardData.forEach((data) => {
-    const card = createCard(data);
+  // Create cards from API data with index for priority loading
+  cardData.forEach((data, index) => {
+    const card = createCard(data, index);
     ul.appendChild(card);
   });
   

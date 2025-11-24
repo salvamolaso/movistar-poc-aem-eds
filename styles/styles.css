@@ -10,7 +10,7 @@
  * governing permissions and limitations under the License.
  */
 
- @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&family=Stack+Sans+Text:wght@200..700&display=swap');
+ /* Fonts now preloaded in head.html for better performance */
 
 :root {
   /* colors */
