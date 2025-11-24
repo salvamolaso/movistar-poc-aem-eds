@@ -36,16 +36,42 @@ function createCard(cardData, index = 0) {
   const imageUrl = cardData.CardimageURL || '';
   console.log('Processing image URL:', imageUrl);
   
+  // Optimize external image URLs
+  const getOptimizedUrl = (url) => {
+    if (!url) return '';
+    // For image hosting services, try to add optimization parameters
+    if (url.includes('movistar.es')) {
+      // Add format and quality parameters if the service supports it
+      const separator = url.includes('?') ? '&' : '?';
+      return `${url}${separator}width=400&quality=85`;
+    }
+    return url;
+  };
+  
   // Check if URL is external (starts with http:// or https://)
   const isExternalUrl = imageUrl.startsWith('http://') || imageUrl.startsWith('https://');
   const isFirstCard = index === 0;
+  const optimizedUrl = getOptimizedUrl(imageUrl);
   
   if (isExternalUrl) {
-    // External URLs: use simple img tag
-    console.log('Using simple img tag for external URL');
+    // External URLs: use picture element with WebP support
+    console.log('Creating optimized picture for external URL');
+    const picture = document.createElement('picture');
+    
+    // Try WebP version first (if server supports it)
+    const webpUrl = optimizedUrl.replace(/\.(jpg|jpeg|png)$/i, '.webp');
+    const sourceWebp = document.createElement('source');
+    sourceWebp.type = 'image/webp';
+    sourceWebp.srcset = webpUrl;
+    picture.appendChild(sourceWebp);
+    
+    // Fallback to optimized original
     const img = document.createElement('img');
-    img.src = imageUrl;
+    img.src = optimizedUrl;
     img.alt = cardData.CardTitle || 'Product image';
+    img.width = 400;
+    img.height = 300;
+    
     // Add fetchpriority and loading attributes for performance
     if (isFirstCard) {
       img.fetchPriority = 'high';
@@ -53,21 +79,25 @@ function createCard(cardData, index = 0) {
     } else {
       img.loading = 'lazy';
     }
-    imageWrapper.appendChild(img);
+    
+    picture.appendChild(img);
+    imageWrapper.appendChild(picture);
   } else {
-    // Relative paths (AEM): use createOptimizedPicture
+    // Relative paths (AEM): use createOptimizedPicture with better breakpoints
     console.log('Using createOptimizedPicture for relative path');
     const picture = createOptimizedPicture(
       imageUrl,
       cardData.CardTitle || 'Product image',
       !isFirstCard, // eager: false for first card (don't lazy load), true for others
-      [{ width: '750' }]
+      [{ media: '(min-width: 768px)', width: '600' }, { media: '(max-width: 767px)', width: '400' }]
     );
     // Add fetchpriority to first card for LCP optimization
     if (isFirstCard) {
       const img = picture.querySelector('img');
       if (img) {
         img.fetchPriority = 'high';
+        img.width = 600;
+        img.height = 450;
       }
     }
     imageWrapper.appendChild(picture);

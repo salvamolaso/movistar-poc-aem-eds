@@ -1,0 +1,95 @@
+/* Critical CSS - Inline this in head for fastest rendering */
+/* Contains only above-the-fold styles */
+
+:root {
+  --background-color: white;
+  --text-color: #131313;
+  --body-font-family: "Manrope", sans-serif;
+}
+
+/* Prevent FOUC */
+body {
+  margin: 0;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  font-family: var(--body-font-family);
+  font-size: 18px;
+  line-height: 1.6;
+  display: none;
+}
+
+body.appear {
+  display: block;
+}
+
+/* Header critical styles */
+header {
+  height: 64px;
+}
+
+/* Main content critical styles */
+main {
+  min-height: calc(100vh - 64px);
+}
+
+/* First section/hero critical styles */
+.section {
+  padding: 16px;
+}
+
+/* Content fragments container - above the fold */
+.content-fragments {
+  padding: 0;
+  margin: 0;
+}
+
+.content-fragments > ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 24px;
+}
+
+/* First content fragment - likely LCP */
+.content-fragments .first-content-fragment {
+  background: linear-gradient(180deg, #1a3a52 0%, #0d1f2d 100%);
+  color: white;
+  border-radius: 16px;
+  overflow: hidden;
+  flex: 1;
+}
+
+.content-fragment-card-image {
+  line-height: 0;
+}
+
+.content-fragment-card-image img,
+.content-fragment-card-image picture {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Prevent layout shift for images */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Loading state */
+.cf-loading {
+  padding: 40px 20px;
+  text-align: center;
+  color: #666;
+}
+
+/* Font loading optimization */
+@font-face {
+  font-family: "Manrope";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Arial');
+}
+

@@ -33,12 +33,36 @@
 
 .content-fragment .content-fragment-card-image {
   line-height: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Reserve space for images to prevent layout shift */
+.content-fragment .content-fragment-card-image::before {
+  content: '';
+  display: block;
+  padding-top: 75%; /* 4:3 aspect ratio */
 }
 
 .content-fragment > ul > li img {
   width: 100%;
+  height: auto;
   aspect-ratio: 4 / 3;
   object-fit: cover;
+  display: block;
+}
+
+/* Optimize image rendering */
+.content-fragment .content-fragment-card-image img,
+.content-fragment .content-fragment-card-image picture img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
 }
 
 /* Error state */

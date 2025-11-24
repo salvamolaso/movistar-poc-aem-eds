@@ -12,6 +12,12 @@ import {
   loadCSS,
 } from './aem.js';
 
+import {
+  optimizeLazyLoading,
+  optimizeFontLoading,
+  addImageDimensions,
+} from './performance.js';
+
 /**
  * Moves all the attributes from a given elmenet to another given element.
  * @param {Element} from the element to copy attributes from
@@ -92,11 +98,18 @@ export function decorateMain(main) {
 async function loadEager(doc) {
   document.documentElement.lang = 'en';
   decorateTemplateAndTheme();
+  
+  // Optimize font loading immediately
+  optimizeFontLoading();
+  
   const main = doc.querySelector('main');
   if (main) {
     decorateMain(main);
     document.body.classList.add('appear');
     await loadSection(main.querySelector('.section'), waitForFirstImage);
+    
+    // Add image dimensions to prevent layout shift
+    addImageDimensions();
   }
 
   try {
@@ -116,6 +129,9 @@ async function loadEager(doc) {
 async function loadLazy(doc) {
   const main = doc.querySelector('main');
   await loadSections(main);
+
+  // Optimize lazy loading for all images
+  optimizeLazyLoading();
 
   const { hash } = window.location;
   const element = hash ? doc.getElementById(hash.substring(1)) : false;

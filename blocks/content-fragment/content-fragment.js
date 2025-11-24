@@ -147,8 +147,23 @@ export default async function decorate(block) {
     const isFirstFragment = block.closest('.first-content-fragment') !== null;
     const fetchPriorityAttr = isFirstFragment ? ' fetchpriority="high"' : '';
     const loadingAttr = isFirstFragment ? ' loading="eager"' : ' loading="lazy"';
+    
+    // Generate optimized image URLs with format parameters
+    const getOptimizedImageUrl = (url, width = 800) => {
+      if (!url) return '';
+      // For AEM images, add optimization parameters
+      if (url.includes('adobeaemcloud.com')) {
+        const separator = url.includes('?') ? '&' : '?';
+        return `${url}${separator}width=${width}&format=webply&optimize=medium&quality=85`;
+      }
+      return url;
+    };
+    
+    // Generate WebP source with fallback
+    const optimizedImageUrl = getOptimizedImageUrl(imageUrl, 800);
+    const optimizedImageUrlSmall = getOptimizedImageUrl(imageUrl, 400);
 
-    // Render the content fragment as a card with new fields
+    // Render the content fragment as a card with new fields and optimized images
     block.innerHTML = `
       <ul>
         <li data-aue-resource="${itemId}" 
@@ -158,11 +173,16 @@ export default async function decorate(block) {
           
           ${imageUrl ? `
             <div class='content-fragment-card-image'>
-              <img src="${imageUrl}" 
-                   alt="${title || description.substring(0, 50)}"${fetchPriorityAttr}${loadingAttr}
-                   data-aue-prop="bannerimage" 
-                   data-aue-label="Banner Image" 
-                   data-aue-type="media">
+              <picture>
+                <source type="image/webp" srcset="${optimizedImageUrl}" media="(min-width: 768px)">
+                <source type="image/webp" srcset="${optimizedImageUrlSmall}" media="(max-width: 767px)">
+                <img src="${optimizedImageUrl}" 
+                     alt="${title || description.substring(0, 50)}"${fetchPriorityAttr}${loadingAttr}
+                     width="800" height="600"
+                     data-aue-prop="bannerimage" 
+                     data-aue-label="Banner Image" 
+                     data-aue-type="media">
+              </picture>
             </div>
           ` : ''}
           
