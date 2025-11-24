@@ -29,6 +29,13 @@
 <link rel="preload" href="/styles/styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
 <noscript><link rel="stylesheet" href="/styles/styles.css"></noscript>
 
+<!-- Meta tag for LCP image (add this to your page template in AEM) -->
+<!-- Example: <meta property="og:image" content="https://ssr.col.movistar.es/api/v3/get-pic/..."> -->
+<!-- Or: <meta property="lcp-image" content="https://..."> -->
+
+<!-- Early LCP discovery script - runs BEFORE main scripts -->
+<script src="/scripts/lcp-preload.js"></script>
+
 <!-- Scripts with optimized loading -->
 <script src="/scripts/aem.js" type="module"></script>
 <script src="/scripts/scripts.js" type="module"></script>

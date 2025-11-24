@@ -32,6 +32,10 @@ export default async function decorate(block) {
   const contentPath = block.querySelector(':scope div:nth-child(1) > div a')?.textContent?.trim() 
                       || block.querySelector(':scope div:nth-child(1) > div')?.textContent?.trim();
   const variationName = block.querySelector(':scope div:nth-child(2) > div')?.textContent?.trim()?.toLowerCase()?.replace(' ', '_') || 'main';
+  
+  // Check if image URL is already provided in the block (for LCP optimization)
+  const preRenderedImage = block.querySelector(':scope div:nth-child(3) > div img');
+  const preRenderedImageUrl = preRenderedImage?.src || block.querySelector(':scope div:nth-child(3) > div a')?.href || block.querySelector(':scope div:nth-child(3) > div')?.textContent?.trim();
 
   // Validate content path
   if (!contentPath) {
@@ -40,8 +44,25 @@ export default async function decorate(block) {
     return;
   }
 
-  // Show loading state
-  block.innerHTML = '<div class="cf-loading">Loading content...</div>';
+  // If we have a pre-rendered image (for LCP), show it immediately before fetching data
+  const isFirstFragment = block.closest('.first-content-fragment') !== null;
+  if (preRenderedImageUrl && preRenderedImageUrl.startsWith('http') && isFirstFragment) {
+    // Render immediate placeholder with LCP image for instant discovery
+    block.innerHTML = `
+      <div class="cf-immediate-lcp">
+        <picture>
+          <img src="${preRenderedImageUrl}" 
+               alt="Loading..." 
+               width="800" height="600"
+               fetchpriority="high" 
+               loading="eager">
+        </picture>
+      </div>
+    `;
+  } else {
+    // Show loading state
+    block.innerHTML = '<div class="cf-loading">Loading content...</div>';
+  }
 
   try {
     // URL encode the content path
