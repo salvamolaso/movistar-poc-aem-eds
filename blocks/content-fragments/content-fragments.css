@@ -231,7 +231,8 @@ margin-top:10px;
 
 .content-fragments .content-fragment .cf-description p {
   background-color: transparent !important;
-  color: #fff !important;
+  color: #B8B8B8 !important;
+  /* color: #fff !important; */
   margin: 0;
 }
 
@@ -256,4 +257,7 @@ margin-top:10px;
     line-height: 1;
     letter-spacing: 0;
     margin-bottom: 8px;
+}
+.first-content-fragment > .content-fragment > ul > li > .content-fragment-card-body .cf-description p{
+  color: white !important;
 }
