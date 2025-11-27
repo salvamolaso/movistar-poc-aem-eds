@@ -1,6 +1,58 @@
 import { createOptimizedPicture } from '../../scripts/aem.js';
 
 /**
+ * Adds preconnect link for a given URL origin
+ * @param {string} url - The URL to preconnect to
+ */
+function addPreconnect(url) {
+  try {
+    const urlObj = new URL(url);
+    const origin = urlObj.origin;
+    
+    // Check if preconnect already exists
+    if (document.querySelector(`link[rel="preconnect"][href="${origin}"]`)) {
+      return;
+    }
+    
+    // Create preconnect link
+    const preconnect = document.createElement('link');
+    preconnect.rel = 'preconnect';
+    preconnect.href = origin;
+    preconnect.crossOrigin = 'anonymous';
+    document.head.appendChild(preconnect);
+    
+    console.log('Added preconnect for:', origin);
+  } catch (error) {
+    console.warn('Could not add preconnect for:', url, error);
+  }
+}
+
+/**
+ * Adds preconnect links for image origins from card data
+ * @param {Array} cardData - Array of card data
+ */
+function setupImagePreconnects(cardData) {
+  const imageOrigins = new Set();
+  
+  cardData.forEach((card) => {
+    const imageUrl = card.CardimageURL;
+    if (imageUrl && (imageUrl.startsWith('http://') || imageUrl.startsWith('https://'))) {
+      try {
+        const origin = new URL(imageUrl).origin;
+        imageOrigins.add(origin);
+      } catch (e) {
+        // Invalid URL, skip
+      }
+    }
+  });
+  
+  // Add preconnect for each unique origin
+  imageOrigins.forEach((origin) => {
+    addPreconnect(origin);
+  });
+}
+
+/**
  * Fetches data from the API endpoint
  * @param {string} apiEndpoint - The API endpoint URL
  * @returns {Promise<Array>} Array of card data
@@ -103,6 +155,9 @@ export default async function decorate(block) {
   // Hardcoded API endpoint - not authored by users
   const apiEndpoint = 'https://691ae6a52d8d78557570a004.mockapi.io/api/getData/Data';
   
+  // Add preconnect for API endpoint early
+  addPreconnect(apiEndpoint);
+  
   // Show loading state
   block.innerHTML = '<div class="promo-cards-loading">Loading cards...</div>';
   
@@ -116,6 +171,9 @@ export default async function decorate(block) {
     block.innerHTML = '<div class="promo-cards-error">No cards available at this time.</div>';
     return;
   }
+  
+  // Setup preconnect for image origins to improve loading performance
+  setupImagePreconnects(cardData);
   
   // Create card list
   const ul = document.createElement('ul');
