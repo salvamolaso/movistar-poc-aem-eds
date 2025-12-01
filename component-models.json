@@ -24,6 +24,27 @@
     ]
   },
   {
+    "id": "contentfragment",
+    "fields": [
+      {
+        "component": "aem-content",
+        "name": "reference",
+        "label": "Reference"
+      },
+      {
+        "component": "select",
+        "name": "style",
+        "label": "Style",
+        "options": [
+          {
+            "name": "Master",
+            "value": "master"
+          }
+        ]
+      }
+    ]
+  },
+  {
     "id": "image",
     "fields": [
       {
@@ -161,6 +182,17 @@
     ]
   },
   {
+    "id": "carousel",
+    "fields": [
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "card",
+        "value": ""
+      }
+    ]
+  },
+  {
     "id": "columns",
     "fields": [
       {
@@ -176,6 +208,110 @@
         "name": "rows",
         "value": "",
         "label": "Rows"
+      }
+    ]
+  },
+  {
+    "id": "contentfragment",
+    "fields": [
+      {
+        "component": "aem-content-fragment",
+        "name": "reference",
+        "label": "Content Fragment Picker",
+        "valueType": "string",
+        "required": true,
+        "variationName": "contentFragmentVariation"
+      },
+      {
+        "component": "text",
+        "name": "contentFragmentVariation",
+        "label": "Selected Variation",
+        "value": "",
+        "valueType": "string",
+        "description": "Persisted variation for publish; leave empty for master.",
+        "condition": {
+          "==": [
+            {
+              "var": "__alwaysFalse"
+            },
+            true
+          ]
+        }
+      },
+      {
+        "component": "select",
+        "name": "displaystyle",
+        "label": "Style",
+        "options": [
+          {
+            "name": "default",
+            "value": ""
+          },
+          {
+            "name": "Image Left",
+            "value": "image-left"
+          },
+          {
+            "name": "Image Right",
+            "value": "image-right"
+          },
+          {
+            "name": "Image Top",
+            "value": "image-top"
+          },
+          {
+            "name": "Image Bottom",
+            "value": "image-bottom"
+          }
+        ]
+      },
+      {
+        "component": "select",
+        "name": "alignment",
+        "label": "Alignment",
+        "options": [
+          {
+            "name": "Text Left",
+            "value": "text-left"
+          },
+          {
+            "name": "Text Right",
+            "value": "text-right"
+          },
+          {
+            "name": "Text Center",
+            "value": "text-center"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "contentfragmentitem",
+    "fields": [
+      {
+        "component": "aem-content-fragment",
+        "name": "reference",
+        "label": "Content Fragment Picker",
+        "valueType": "string",
+        "required": true,
+        "variationName": "contentFragmentVariation"
+      },
+      {
+        "component": "text",
+        "name": "contentFragmentVariation",
+        "label": "Selected Variation",
+        "value": "",
+        "valueType": "string",
+        "description": "Persisted variation for publish; leave empty for master.",
+        "condition": {
+          "==": [
+            {
+              "var": "__alwaysFalse"
+            },
+            true
+          ]
+        }
       }
     ]
   },
@@ -214,5 +350,9 @@
         "valueType": "string"
       }
     ]
+  },
+  {
+    "id": "promo-cards",
+    "fields": []
   }
 ]
