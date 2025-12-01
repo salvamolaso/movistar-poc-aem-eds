@@ -23,7 +23,7 @@ export default async function decorate(block) {
     graphqlBaseUrl = '/graphql-author';
   } else {
     // Running on EDS site - direct to publish
-    graphqlBaseUrl = 'https://publish-p171966-e1846391.adobeaemcloud.com';
+    graphqlBaseUrl = 'https://publish-p169803-e1812709.adobeaemcloud.com';
   }
   
   const GRAPHQL_ENDPOINT = '/graphql/execute.json/global/getFragment';
