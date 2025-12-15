@@ -3,3 +3,6 @@ mountpoints:
     url: "https://author-p169803-e1812709.adobeaemcloud.com/bin/franklin.delivery/salvamolaso/movistar-poc-aem-eds/main"
     type: "markup"
     suffix: ".html"
+  /graphql-author:
+    url: "https://author-p169803-e1812709.adobeaemcloud.com/graphql"
+    type: "proxy"

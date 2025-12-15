@@ -1,0 +1,394 @@
+/* 
+ * Carousel Block - Sports Promo Overlay Design
+ * Version: 2.0 - FORCE REFRESH
+ * Last Updated: 2025-11-18
+ */
+
+/* ============================================
+   CORE CAROUSEL CONTAINER STYLES
+   ============================================ */
+
+.carousel-container {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-direction: column;
+    margin: 0;
+    position: relative;
+    box-shadow: none;
+  overflow: hidden;
+  }
+
+  .carousel-container .carousel-wrapper {
+    padding: 0;
+    margin: 0;
+  width: 100%;
+    max-width: initial;
+  }
+
+  .carousel-container .carousel-wrapper .carousel {
+  padding: 20px 5% 0px 5%;
+    position: relative;
+  overflow: hidden;
+  }
+
+  .carousel-container .carousel-wrapper .carousel > ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    min-width: initial;
+  width: 100%;
+  display: flex;
+    flex-direction: row;
+  gap: 20px;
+  transition: transform 0.3s ease-in-out;
+  --items-per-view: 3;
+}
+
+/* ============================================
+   CARD ITEM STYLES - SPORTS PROMO DESIGN
+   ULTRA-SPECIFIC - Only carousel items
+   ============================================ */
+
+  .carousel-container .carousel-wrapper .carousel > ul > li {
+  display: flex !important;
+  flex-direction: column !important;
+  width: calc((100% - (var(--items-per-view) - 1) * 20px) / var(--items-per-view));
+  min-width: calc((100% - (var(--items-per-view) - 1) * 20px) / var(--items-per-view));
+  flex-shrink: 0;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  position: relative !important;
+  overflow: hidden !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+  cursor: pointer !important;
+  background: transparent !important;
+}
+
+.carousel-container .carousel-wrapper .carousel > ul > li:hover {
+  transform: translateY(-5px) !important;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25) !important;
+}
+
+/* ============================================
+   IMAGE CONTAINER WITH GRADIENT OVERLAY
+   ULTRA-SPECIFIC - Only carousel
+   ============================================ */
+
+  .carousel-container .carousel-wrapper .carousel .cards-card-image {
+  line-height: 0 !important;
+  position: relative !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
+  width: 100% !important;
+  height: 100% !important;
+  display: block !important;
+}
+
+/* CRITICAL: Dark gradient overlay - ONLY INSIDE CAROUSEL */
+.carousel-container .carousel-wrapper .carousel .cards-card-image::after {
+  content: '' !important;
+  position: absolute !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 70% !important;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.7) 40%, rgba(0, 0, 0, 0.3) 70%, transparent 100%) !important;
+  z-index: 1 !important;
+  pointer-events: none !important;
+}
+
+/* ============================================
+   TEXT OVERLAY - POSITIONED ON TOP OF IMAGE
+   ULTRA-SPECIFIC - Only carousel
+   ============================================ */
+
+.carousel-container .carousel-wrapper .carousel .cards-card-body {
+  position: absolute !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  top: auto !important;
+  padding: 30px !important;
+  background: transparent !important;
+  color: #fff !important;
+  z-index: 2 !important;
+  margin: 0 !important;
+  display: block !important;
+}
+
+  .carousel-container .carousel-wrapper .carousel .cards-card-body p {
+  margin: 0 0 8px 0 !important;
+  color: #fff !important;
+  }
+  
+/* ============================================
+   HEADINGS - WHITE TEXT
+   ULTRA-SPECIFIC - Only carousel
+   ============================================ */
+  
+  .carousel-container .carousel-wrapper .carousel .cards-card-body h1, 
+  .carousel-container .carousel-wrapper .carousel .cards-card-body h2, 
+.carousel-container .carousel-wrapper .carousel .cards-card-body h3 {
+  margin: 0 0 16px 0 !important;
+  padding: 0 !important;
+  font-size: 28px !important;
+  line-height: 36px !important;
+  font-weight: 700 !important;
+  color: #fff !important;
+}
+
+/* ============================================
+   RED PROMOTIONAL BADGE
+   ULTRA-SPECIFIC - Only carousel
+   ============================================ */
+
+.carousel-container .carousel-wrapper .carousel .cards-card-body .promo-badge {
+  display: inline-block !important;
+  background-color: #E60019 !important;
+  color: #fff !important;
+  padding: 6px 12px !important;
+  border-radius: 4px !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  margin: 0 0 12px 0 !important;
+}
+
+/* ============================================
+   TOP LABEL TEXT
+   ULTRA-SPECIFIC - Only carousel
+   ============================================ */
+
+.carousel-container .carousel-wrapper .carousel .cards-card-body .promo-label {
+  font-size: 12px !important;
+  line-height: 16px !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+  margin: 0 0 8px 0 !important;
+  font-weight: 400 !important;
+}
+
+/* ============================================
+   PRICE STYLING
+   ULTRA-SPECIFIC - Only carousel
+   ============================================ */
+
+.carousel-container .carousel-wrapper .carousel .cards-card-body .promo-price {
+  font-size: 16px !important;
+  line-height: 22px !important;
+  color: #fff !important;
+  font-weight: 500 !important;
+  margin: 0 0 4px 0 !important;
+}
+
+.carousel-container .carousel-wrapper .carousel .cards-card-body .promo-price-value {
+  font-size: 24px !important;
+  font-weight: 700 !important;
+  display: block !important;
+  margin-top: 4px !important;
+  color: #fff !important;
+}
+
+/* ============================================
+   DETAILS / FINE PRINT
+   ULTRA-SPECIFIC - Only carousel
+   ============================================ */
+
+.carousel-container .carousel-wrapper .carousel .cards-card-body .promo-details {
+  font-size: 14px !important;
+  line-height: 20px !important;
+  color: rgba(255, 255, 255, 0.85) !important;
+  margin: 8px 0 0 0 !important;
+}
+
+/* ============================================
+   IMAGE STYLING
+   ULTRA-SPECIFIC - Only carousel
+   ============================================ */
+
+.carousel-container .carousel-wrapper .carousel > ul > li img {
+  width: 100% !important;
+  height: 400px !important;
+  object-fit: cover !important;
+  border-radius: 8px !important;
+  transition: transform 0.5s ease !important;
+  display: block !important;
+}
+
+.carousel-container .carousel-wrapper .carousel > ul > li:hover img {
+  transform: scale(1.05) !important;
+}
+
+.carousel-container .carousel-wrapper .carousel > ul > li picture {
+  width: 100% !important;
+  height: 100% !important;
+  display: block !important;
+}
+
+/* ============================================
+   NAVIGATION BUTTONS - Bigger and Darker
+   ============================================ */
+.carousel-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    /* background: rgb(255 255 255 / 0%); */
+    border: none;
+    border-radius: 50%;
+    width: 52px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.3s 
+ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    position: absolute;
+    padding: 10px 15px;
+    background-color: var(--ms-White);
+    color: var(--ms-grey700);
+    border: 1px solid var(--ms-grey300);
+    border-radius: 50px;
+    font-size: 1rem;
+    cursor: pointer;
+    z-index: 4;
+    direction: ltr;
+    background: #fff;
+}
+
+.carousel-nav:hover:not(:disabled) {
+  background: rgba(0, 0, 0, 0.9);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.carousel-nav svg {
+  width: 32px;
+  height: 32px;
+  color: #000;
+}
+
+.carousel-nav-prev {
+  left: 20px;
+}
+
+.carousel-nav-next {
+  right: 20px;
+}
+
+.carousel-nav:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+
+/* Desktop - 3 cards */
+@media (width >= 1200px) {
+  .carousel-container .carousel-wrapper .carousel > ul {
+    --items-per-view: 3;
+  }
+}
+
+/* Tablet - 2 cards */
+@media (width >= 768px) and (width < 1200px) {
+  .carousel-container .carousel-wrapper .carousel > ul {
+    --items-per-view: 2;
+  }
+  
+  .carousel-container .carousel-wrapper .carousel .cards-card-body h1,
+  .carousel-container .carousel-wrapper .carousel .cards-card-body h2 {
+    font-size: 24px !important;
+    line-height: 32px !important;
+  }
+  
+  .carousel-container .carousel-wrapper .carousel .cards-card-body {
+    padding: 24px !important;
+  }
+}
+
+/* Mobile - 1 card */
+@media (width < 768px) {
+  .carousel-container .carousel-wrapper .carousel {
+    padding: 20px 4% !important;
+  }
+  
+  .carousel-container .carousel-wrapper .carousel > ul {
+    --items-per-view: 1;
+    gap: 15px !important;
+  }
+  
+  .carousel-container .carousel-wrapper .carousel > ul > li img {
+    height: 300px !important;
+  }
+  
+  .carousel-nav {
+    width: 50px !important;
+    height: 50px !important;
+  }
+  
+  .carousel-nav svg {
+    width: 28px !important;
+    height: 28px !important;
+  }
+  
+  .carousel-nav-prev {
+    left: 10px !important;
+  }
+  
+  .carousel-nav-next {
+    right: 10px !important;
+  }
+  
+  .carousel-container .carousel-wrapper .carousel .cards-card-body {
+    padding: 20px !important;
+  }
+  
+  .carousel-container .carousel-wrapper .carousel .cards-card-body h1,
+  .carousel-container .carousel-wrapper .carousel .cards-card-body h2 {
+    font-size: 20px !important;
+    line-height: 28px !important;
+    margin-bottom: 12px !important;
+  }
+  
+  .carousel-container .carousel-wrapper .carousel .cards-card-body .promo-label {
+    font-size: 11px !important;
+    line-height: 14px !important;
+  }
+  
+  .carousel-container .carousel-wrapper .carousel .cards-card-body .promo-badge {
+    font-size: 12px !important;
+    padding: 4px 10px !important;
+  }
+  
+  .carousel-container .carousel-wrapper .carousel .cards-card-body .promo-price {
+    font-size: 14px !important;
+    line-height: 20px !important;
+  }
+  
+  .carousel-container .carousel-wrapper .carousel .cards-card-body .promo-price-value {
+    font-size: 20px !important;
+  }
+  
+  .carousel-container .carousel-wrapper .carousel .cards-card-body .promo-details {
+    font-size: 12px !important;
+    line-height: 18px !important;
+  }
+  
+  /* Disable hover effects on mobile */
+  .carousel-container .carousel-wrapper .carousel > ul > li:hover {
+    transform: none !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  }
+  
+  .carousel-container .carousel-wrapper .carousel > ul > li:hover img {
+    transform: none !important;
+  }
+}

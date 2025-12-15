@@ -1,0 +1,153 @@
+/* Promo Cards Container */
+.promo-cards {
+  margin: 0;
+  padding: 0;
+}
+
+.promo-cards-loading,
+.promo-cards-error {
+  text-align: center;
+  padding: 40px;
+  font-size: var(--body-font-size-m);
+  color: var(--text-color);
+}
+
+.promo-cards-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-gap: 20px;
+}
+
+/* Individual Card */
+.promo-card {
+    background-color: white;
+    border-radius: 25px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(0, 0, 0, .1);
+    border: 1px solid #ddd;
+}
+
+.promo-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* Card Image */
+.promo-card-image {
+  line-height: 0;
+}
+
+.promo-card-image img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+/* Card Body */
+.promo-card-body {
+    padding: 20px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    text-align: left;
+    justify-content: space-between;
+}
+
+.promo-card-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0 0 4px 0;
+  color: var(--text-color);
+  line-height: 1.2;
+  font-weight: 800;
+}
+
+.promo-card-offer {
+    background-color: #d32f2f;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 0;
+    font-size: 14px;
+    font-weight: normal;
+    display: inline-block;
+    margin-bottom: 8px;
+    align-self: flex-start;
+    background-color: #AD0000;
+    margin: 10px 0;
+}
+
+.promo-card-price-info {
+  margin-bottom: 6px;
+}
+
+.promo-card-price-info .price-label {
+  display: block;
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 2px;
+}
+
+.promo-card-price-info .price-main {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.promo-card-price-info .price-value {
+  font-size: 26px;
+  font-weight: bold;
+  line-height: 1;
+  color: var(--text-color);
+}
+
+.promo-card-price-info .price-currency {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-color);
+  line-height: 1.4;
+}
+
+.promo-card-price-info .price-period {
+  font-size: 12px;
+  font-weight: normal;
+}
+
+.promo-card-pack {
+  font-size: 14px;
+  color: #666;
+  margin-top: 4px;
+}
+
+/* Responsive Design */
+@media (width >= 600px) {
+  .promo-cards-list {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
+}
+
+@media (width >= 900px) {
+  .promo-cards-list {
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    grid-gap: 24px;
+  }
+  
+  .promo-card-body {
+    padding: 24px;
+  }
+}
+
+@media (width >= 1200px) {
+  .promo-cards-list {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+

@@ -31,3 +31,9 @@
     order: unset;
   }
 }
+
+
+.columns-img-col img {
+    height: 35px;
+}
+
