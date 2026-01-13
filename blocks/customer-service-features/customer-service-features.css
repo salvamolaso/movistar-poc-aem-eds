@@ -1,0 +1,148 @@
+/* Customer Service Features Block */
+main .customer-service-features {
+  padding: 60px 0;
+}
+
+main .customer-service-features-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Heading */
+main .customer-service-features-heading {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+main .customer-service-features-heading h1,
+main .customer-service-features-heading h2,
+main .customer-service-features-heading h3 {
+  font-size: var(--heading-font-size-xl);
+  font-weight: 700;
+  color: var(--text-color);
+  margin: 0;
+  letter-spacing: -0.5px;
+}
+
+/* Features Grid */
+main .customer-service-features-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 40px;
+  margin-bottom: 50px;
+}
+
+main .customer-service-features-item {
+  text-align: center;
+  padding: 0 20px;
+}
+
+/* Icon */
+main .customer-service-features-icon {
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+main .customer-service-features-icon picture {
+  display: block;
+}
+
+main .customer-service-features-icon img {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+}
+
+/* Title */
+main .customer-service-features-title {
+  margin-bottom: 16px;
+}
+
+main .customer-service-features-title h1,
+main .customer-service-features-title h2,
+main .customer-service-features-title h3,
+main .customer-service-features-title h4 {
+  font-size: var(--heading-font-size-m);
+  font-weight: 600;
+  color: var(--text-color);
+  margin: 0;
+  line-height: 1.3;
+}
+
+/* Description */
+main .customer-service-features-description {
+  font-size: var(--body-font-size-s);
+  color: var(--text-color);
+  line-height: 1.6;
+}
+
+main .customer-service-features-description p {
+  margin: 0;
+}
+
+/* CTA Button */
+main .customer-service-features-cta {
+  text-align: center;
+  margin-top: 40px;
+}
+
+main .customer-service-features-cta a.button {
+  background-color: #019DF4;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 14px 40px;
+  font-size: var(--body-font-size-s);
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-block;
+  transition: background-color 0.3s ease;
+}
+
+main .customer-service-features-cta a.button:hover {
+  background-color: #0176ba;
+  text-decoration: none;
+}
+
+/* Tablet and Desktop */
+@media (width >= 768px) {
+  main .customer-service-features-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 50px;
+  }
+
+  main .customer-service-features-item {
+    padding: 0 10px;
+  }
+
+  main .customer-service-features-icon img {
+    width: 100px;
+    height: 100px;
+  }
+}
+
+@media (width >= 900px) {
+  main .customer-service-features {
+    padding: 80px 0;
+  }
+
+  main .customer-service-features-heading {
+    margin-bottom: 70px;
+  }
+
+  main .customer-service-features-heading h1,
+  main .customer-service-features-heading h2,
+  main .customer-service-features-heading h3 {
+    font-size: var(--heading-font-size-xxl);
+  }
+
+  main .customer-service-features-title h1,
+  main .customer-service-features-title h2,
+  main .customer-service-features-title h3,
+  main .customer-service-features-title h4 {
+    font-size: var(--heading-font-size-l);
+  }
+}
+
