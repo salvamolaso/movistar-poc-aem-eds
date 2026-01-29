@@ -1,0 +1,89 @@
+[
+  {
+    "id": "customer-service-features",
+    "fields": [
+      {
+        "component": "richtext",
+        "name": "heading",
+        "value": "",
+        "label": "Main Heading",
+        "valueType": "string"
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "feature1Icon",
+        "label": "Feature 1 Icon",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "feature1Title",
+        "label": "Feature 1 Title",
+        "value": ""
+      },
+      {
+        "component": "richtext",
+        "name": "feature1Description",
+        "value": "",
+        "label": "Feature 1 Description",
+        "valueType": "string"
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "feature2Icon",
+        "label": "Feature 2 Icon",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "feature2Title",
+        "label": "Feature 2 Title",
+        "value": ""
+      },
+      {
+        "component": "richtext",
+        "name": "feature2Description",
+        "value": "",
+        "label": "Feature 2 Description",
+        "valueType": "string"
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "feature3Icon",
+        "label": "Feature 3 Icon",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "feature3Title",
+        "label": "Feature 3 Title",
+        "value": ""
+      },
+      {
+        "component": "richtext",
+        "name": "feature3Description",
+        "value": "",
+        "label": "Feature 3 Description",
+        "valueType": "string"
+      },
+      {
+        "component": "aem-content",
+        "name": "ctaLink",
+        "label": "CTA Link"
+      },
+      {
+        "component": "text",
+        "name": "ctaText",
+        "label": "CTA Text",
+        "value": "Ver detalle"
+      }
+    ]
+  }
+]
+
