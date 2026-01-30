@@ -352,6 +352,38 @@
     ]
   },
   {
+    "id": "promo-banner",
+    "fields": [
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "image",
+        "label": "Content Image",
+        "multi": false
+      },
+      {
+        "component": "richtext",
+        "name": "discount",
+        "label": "Discount Section",
+        "description": "Discount value and offer label",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "details",
+        "label": "Product Details",
+        "description": "Product title, price info, and any additional text",
+        "valueType": "string"
+      },
+      {
+        "component": "aem-content",
+        "valueType": "string",
+        "name": "ctaLink",
+        "label": "CTA Button Link"
+      }
+    ]
+  },
+  {
     "id": "promo-cards",
     "fields": []
   },
