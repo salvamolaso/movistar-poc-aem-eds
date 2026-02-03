@@ -391,6 +391,13 @@
     "id": "customer-service-features",
     "fields": [
       {
+        "component": "reference",
+        "valueType": "string",
+        "name": "heroImage",
+        "label": "Hero Image",
+        "multi": false
+      },
+      {
         "component": "richtext",
         "name": "heading",
         "value": "",
