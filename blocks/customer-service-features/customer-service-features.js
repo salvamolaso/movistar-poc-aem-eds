@@ -101,7 +101,7 @@ function decorateHorizontalFormat(block, rows) {
 
 /**
  * Decorate vertical format where each row contains one piece of data
- * Format: heading | [empty] | title | description | [empty] | title | description | [empty] | title | description | cta
+ * Format: heading | icon | title | description | icon | title | description | icon | title | description | link | cta-text
  */
 function decorateVerticalFormat(block, rows) {
   // Create new structure
@@ -125,7 +125,7 @@ function decorateVerticalFormat(block, rows) {
 
   // Parse rows to extract features
   // Skip first row (heading) and process remaining rows
-  // Look for patterns of: [icon?] title description [empty]
+  // Look for patterns of: icon title description
   const features = [];
   let currentFeature = null;
 
@@ -139,8 +139,18 @@ function decorateVerticalFormat(block, rows) {
     const text = cell.textContent.trim();
     const link = cell.querySelector('a');
 
+    // If row has a link, this is the CTA section - stop processing features
+    if (link) {
+      // Save current feature if exists
+      if (currentFeature && (currentFeature.title || currentFeature.description)) {
+        features.push(currentFeature);
+        currentFeature = null;
+      }
+      break;
+    }
+
     // Skip empty rows
-    if (!text && !picture && !link) {
+    if (!text && !picture) {
       // Empty row might signal end of a feature
       if (currentFeature && (currentFeature.title || currentFeature.description)) {
         features.push(currentFeature);
@@ -149,19 +159,10 @@ function decorateVerticalFormat(block, rows) {
       continue;
     }
 
-    // If row has a link, check if it's a CTA (not a feature link)
-    if (link) {
-      // If we have a current feature, save it
-      if (currentFeature) {
-        features.push(currentFeature);
-      }
-      // CTA found, we're done with features
-      break;
-    }
-
     // If row has a picture, start a new feature with icon
     if (picture) {
-      if (currentFeature) {
+      // Save previous feature if exists
+      if (currentFeature && (currentFeature.title || currentFeature.description)) {
         features.push(currentFeature);
       }
       currentFeature = { icon: picture };
@@ -181,6 +182,9 @@ function decorateVerticalFormat(block, rows) {
       } else if (!currentFeature.description) {
         // Otherwise it's the description
         currentFeature.description = text;
+        // After description, feature is complete
+        features.push(currentFeature);
+        currentFeature = null;
       }
     }
   }
@@ -228,17 +232,45 @@ function decorateVerticalFormat(block, rows) {
 
   container.append(featuresGrid);
 
-  // Look for CTA link in remaining rows
+  // Look for CTA: link row followed by text row
+  // The link row has the URL, the next row has the button text
+  let ctaUrl = null;
+  let ctaText = null;
+
   for (let i = 1; i < rows.length; i += 1) {
-    const ctaLink = rows[i].querySelector('a');
-    if (ctaLink) {
-      const ctaWrapper = document.createElement('div');
-      ctaWrapper.className = 'customer-service-features-cta';
-      ctaLink.classList.add('button');
-      ctaWrapper.append(ctaLink);
-      container.append(ctaWrapper);
+    const row = rows[i];
+    const cell = row.querySelector(':scope > div');
+    if (!cell) continue;
+
+    const link = cell.querySelector('a');
+    const text = cell.textContent.trim();
+
+    if (link && !ctaUrl) {
+      // Found the link row
+      ctaUrl = link.getAttribute('href');
+      // Check next row for button text
+      if (i + 1 < rows.length) {
+        const nextRow = rows[i + 1];
+        const nextCell = nextRow.querySelector(':scope > div');
+        const nextText = nextCell?.textContent.trim();
+        if (nextText && !nextCell.querySelector('a')) {
+          ctaText = nextText;
+        }
+      }
       break;
     }
+  }
+
+  // Create CTA button if we have URL
+  if (ctaUrl) {
+    const ctaWrapper = document.createElement('div');
+    ctaWrapper.className = 'customer-service-features-cta';
+    const ctaLink = document.createElement('a');
+    ctaLink.href = ctaUrl;
+    ctaLink.textContent = ctaText || 'Learn More';
+    ctaLink.classList.add('button');
+    ctaWrapper.append(ctaLink);
+    container.append(ctaWrapper);
   }
 
   // Replace block content
