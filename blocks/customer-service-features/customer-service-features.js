@@ -1,17 +1,23 @@
 /**
  * Decorates the Customer Service Features block
  * Supports two formats:
- * 1. Horizontal: Row 1 = heading, Row 2 = 3 features, Row 3 = CTA
- * 2. Vertical: Sequential rows with heading, icon, title, description per feature
+ * 1. Horizontal: Optional image row, heading row, 3 features row, CTA row
+ * 2. Vertical: Sequential rows with optional image, heading, icon, title, description per feature
  * @param {Element} block - The block element
  */
 export default function decorate(block) {
   // Get all rows from the block
   const rows = [...block.children];
 
-  // Check if this is horizontal format (row 2 has multiple divs with content)
-  const isHorizontalFormat = rows.length === 3
-    && rows[1]?.querySelectorAll(':scope > div').length >= 3;
+  // Check if first row contains only an image (hero image)
+  const firstRowHasOnlyImage = rows[0]?.querySelector('picture') 
+    && !rows[0]?.querySelector('h1, h2, h3, h4, h5, h6, p, a');
+
+  // Check if this is horizontal format
+  // Horizontal format: 3-4 rows with row containing 3 feature columns
+  const featureRowIndex = firstRowHasOnlyImage ? 2 : 1;
+  const isHorizontalFormat = (rows.length === 3 || rows.length === 4)
+    && rows[featureRowIndex]?.querySelectorAll(':scope > div').length >= 3;
 
   if (isHorizontalFormat) {
     decorateHorizontalFormat(block, rows);
@@ -22,23 +28,44 @@ export default function decorate(block) {
 
 /**
  * Decorate horizontal format where features are in columns
+ * Format: [Optional image row] | heading row | features row (3 columns) | CTA row
  */
 function decorateHorizontalFormat(block, rows) {
-  // Extract main heading from first row
-  const headingRow = rows[0];
-  const heading = headingRow.querySelector('h1, h2, h3, h4, h5, h6');
+  let currentRowIndex = 0;
 
-  // Extract features from second row (three sibling div elements)
-  const featuresRow = rows[1];
+  // Check for optional hero image in first row
+  const heroImage = rows[currentRowIndex]?.querySelector('picture');
+  const hasHeroImage = heroImage && !rows[currentRowIndex]?.querySelector('h1, h2, h3, h4, h5, h6, p, a');
+  
+  if (hasHeroImage) {
+    currentRowIndex += 1;
+  }
+
+  // Extract main heading
+  const headingRow = rows[currentRowIndex];
+  const heading = headingRow?.querySelector('h1, h2, h3, h4, h5, h6');
+  currentRowIndex += 1;
+
+  // Extract features from features row (three sibling div elements)
+  const featuresRow = rows[currentRowIndex];
   const featureColumns = [...featuresRow.querySelectorAll(':scope > div')];
+  currentRowIndex += 1;
 
-  // Extract CTA from third row
-  const ctaRow = rows[2];
-  const ctaLink = ctaRow.querySelector('a');
+  // Extract CTA from last row
+  const ctaRow = rows[currentRowIndex];
+  const ctaLink = ctaRow?.querySelector('a');
 
   // Create new structure
   const container = document.createElement('div');
   container.className = 'customer-service-features-container';
+
+  // Add hero image if it exists
+  if (hasHeroImage && heroImage) {
+    const imageWrapper = document.createElement('div');
+    imageWrapper.className = 'customer-service-features-image';
+    imageWrapper.append(heroImage);
+    container.append(imageWrapper);
+  }
 
   // Add heading if it exists
   if (heading) {
@@ -101,15 +128,34 @@ function decorateHorizontalFormat(block, rows) {
 
 /**
  * Decorate vertical format where each row contains one piece of data
- * Format: heading | icon | title | description | icon | title | description | icon | title | description | link | cta-text
+ * Format: [Optional image row] | heading | icon | title | description | icon | title | description | icon | title | description | link | cta-text
  */
 function decorateVerticalFormat(block, rows) {
+  let currentRowIndex = 0;
+
+  // Check for optional hero image in first row
+  const heroImage = rows[currentRowIndex]?.querySelector('picture');
+  const firstRowHeading = rows[currentRowIndex]?.querySelector('h1, h2, h3, h4, h5, h6');
+  const hasHeroImage = heroImage && !firstRowHeading;
+  
+  if (hasHeroImage) {
+    currentRowIndex += 1;
+  }
+
   // Create new structure
   const container = document.createElement('div');
   container.className = 'customer-service-features-container';
 
-  // First row is the heading
-  const headingRow = rows[0];
+  // Add hero image if it exists
+  if (hasHeroImage && heroImage) {
+    const imageWrapper = document.createElement('div');
+    imageWrapper.className = 'customer-service-features-image';
+    imageWrapper.append(heroImage.cloneNode(true));
+    container.append(imageWrapper);
+  }
+
+  // Extract heading from current row
+  const headingRow = rows[currentRowIndex];
   const heading = headingRow?.querySelector('h1, h2, h3, h4, h5, h6');
 
   if (heading) {
@@ -124,12 +170,12 @@ function decorateVerticalFormat(block, rows) {
   featuresGrid.className = 'customer-service-features-grid';
 
   // Parse rows to extract features
-  // Skip first row (heading) and process remaining rows
+  // Skip processed rows and process remaining rows
   // Look for patterns of: icon title description
   const features = [];
   let currentFeature = null;
 
-  for (let i = 1; i < rows.length; i += 1) {
+  for (let i = currentRowIndex + 1; i < rows.length; i += 1) {
     const row = rows[i];
     const cell = row.querySelector(':scope > div');
 
@@ -237,7 +283,7 @@ function decorateVerticalFormat(block, rows) {
   let ctaUrl = null;
   let ctaText = null;
 
-  for (let i = 1; i < rows.length; i += 1) {
+  for (let i = currentRowIndex + 1; i < rows.length; i += 1) {
     const row = rows[i];
     const cell = row.querySelector(':scope > div');
     if (!cell) continue;
