@@ -101,7 +101,7 @@ function decorateHorizontalFormat(block, rows) {
 
 /**
  * Decorate vertical format where each row contains one piece of data
- * Format: heading | icon | title | description | icon | title | description | icon | title | description | cta
+ * Format: heading | [empty] | title | description | [empty] | title | description | [empty] | title | description | cta
  */
 function decorateVerticalFormat(block, rows) {
   // Create new structure
@@ -125,8 +125,9 @@ function decorateVerticalFormat(block, rows) {
 
   // Parse rows to extract features
   // Skip first row (heading) and process remaining rows
-  let currentFeature = null;
+  // Look for patterns of: [icon?] title description [empty]
   const features = [];
+  let currentFeature = null;
 
   for (let i = 1; i < rows.length; i += 1) {
     const row = rows[i];
@@ -138,16 +139,42 @@ function decorateVerticalFormat(block, rows) {
     const text = cell.textContent.trim();
     const link = cell.querySelector('a');
 
-    // If row has a picture, start a new feature
+    // Skip empty rows
+    if (!text && !picture && !link) {
+      // Empty row might signal end of a feature
+      if (currentFeature && (currentFeature.title || currentFeature.description)) {
+        features.push(currentFeature);
+        currentFeature = null;
+      }
+      continue;
+    }
+
+    // If row has a link, check if it's a CTA (not a feature link)
+    if (link) {
+      // If we have a current feature, save it
+      if (currentFeature) {
+        features.push(currentFeature);
+      }
+      // CTA found, we're done with features
+      break;
+    }
+
+    // If row has a picture, start a new feature with icon
     if (picture) {
       if (currentFeature) {
         features.push(currentFeature);
       }
       currentFeature = { icon: picture };
-    } else if (link && text) {
-      // This is the CTA link - we're done with features
-      break;
-    } else if (text && currentFeature) {
+      continue;
+    }
+
+    // If we have text content
+    if (text) {
+      // Start a new feature if we don't have one
+      if (!currentFeature) {
+        currentFeature = {};
+      }
+
       // If no title yet, this is the title
       if (!currentFeature.title) {
         currentFeature.title = text;
@@ -158,8 +185,8 @@ function decorateVerticalFormat(block, rows) {
     }
   }
 
-  // Add last feature
-  if (currentFeature) {
+  // Add last feature if exists
+  if (currentFeature && (currentFeature.title || currentFeature.description)) {
     features.push(currentFeature);
   }
 
@@ -193,7 +220,10 @@ function decorateVerticalFormat(block, rows) {
       feature.append(descWrapper);
     }
 
-    featuresGrid.append(feature);
+    // Only add feature if it has at least a title
+    if (featureData.title) {
+      featuresGrid.append(feature);
+    }
   });
 
   container.append(featuresGrid);
