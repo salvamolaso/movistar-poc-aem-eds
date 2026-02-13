@@ -1,3 +1,26 @@
+// Movistar por ti signature image URL
+const MOVISTAR_POR_TI_IMAGE = 'https://ssr.col.movistar.es/api/v3/get-pic/content/dam/movistar/contenidos/firma_movistar_por_ti.avif?w=1920&oe=png&hash=env-mlksp8ul';
+
+/**
+ * Creates the "Movistar por ti" signature image element
+ * @returns {HTMLElement} The image wrapper element
+ */
+function createSignatureImage() {
+  const imageWrapper = document.createElement('div');
+  imageWrapper.className = 'customer-service-features-image';
+  
+  const picture = document.createElement('picture');
+  const img = document.createElement('img');
+  img.src = MOVISTAR_POR_TI_IMAGE;
+  img.alt = 'Movistar por ti';
+  img.loading = 'eager';
+  
+  picture.append(img);
+  imageWrapper.append(picture);
+  
+  return imageWrapper;
+}
+
 /**
  * Decorates the Customer Service Features block
  * Supports two formats:
@@ -59,13 +82,8 @@ function decorateHorizontalFormat(block, rows) {
   const container = document.createElement('div');
   container.className = 'customer-service-features-container';
 
-  // Add hero image if it exists
-  if (hasHeroImage && heroImage) {
-    const imageWrapper = document.createElement('div');
-    imageWrapper.className = 'customer-service-features-image';
-    imageWrapper.append(heroImage);
-    container.append(imageWrapper);
-  }
+  // Always add the "Movistar por ti" signature image at the top
+  container.append(createSignatureImage());
 
   // Add heading if it exists
   if (heading) {
@@ -146,13 +164,8 @@ function decorateVerticalFormat(block, rows) {
   const container = document.createElement('div');
   container.className = 'customer-service-features-container';
 
-  // Add hero image if it exists
-  if (hasHeroImage && heroImage) {
-    const imageWrapper = document.createElement('div');
-    imageWrapper.className = 'customer-service-features-image';
-    imageWrapper.append(heroImage.cloneNode(true));
-    container.append(imageWrapper);
-  }
+  // Always add the "Movistar por ti" signature image at the top
+  container.append(createSignatureImage());
 
   // Extract heading from current row
   const headingRow = rows[currentRowIndex];
