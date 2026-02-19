@@ -3,6 +3,14 @@
     "id": "customer-service-features",
     "fields": [
       {
+        "component": "reference",
+        "valueType": "string",
+        "name": "heroImage",
+        "label": "Hero Image (Optional)",
+        "description": "Optional image displayed above the heading",
+        "multi": false
+      },
+      {
         "component": "richtext",
         "name": "heading",
         "value": "",

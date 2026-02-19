@@ -2,6 +2,8 @@
 coverage/*
 logs/*
 node_modules/*
+test/tmp/*
+drafts/tmp/*
 
 helix-importer-ui
 .DS_Store
